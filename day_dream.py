@@ -9,7 +9,8 @@ import pygame
 #변수불러오기
 map_lotate = 0
 Communicate = 0
-
+#아이콘 그림 가져오기
+game_icon = pygame.image.load("icon\\icon.png")
 #배경 그림 가져오기
 background = pygame.image.load("bg_image\\test.png")
 sub_background = pygame.image.load("bg_image\\2test.png")
@@ -45,6 +46,8 @@ doctor_meet_main = False
 main_to_x = 0
 main_to_y = 0
 
+#아이콘 바꾸기
+pygame.display.set_icon(game_icon)
 # 게임반복
 while  True:
     if map_lotate == 0:
