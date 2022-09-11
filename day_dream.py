@@ -36,6 +36,16 @@ main_character_height = main_character_size[1]
 main_x_pos = width / 2 - main_character_width
 main_y_pos = height - main_character_height
 
+#주인공 클래스 만들어주기
+class main(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load("character_image\\dummy.png")
+        self.image = pygame.transform.scale(self.image, (main_character_width, main_character_height))
+        self.rect = self.image.get_rect()
+        self.rect.centerx = main_x_pos
+        self.rect.centery = main_y_pos
+user = main()#주인공 클래스 변수로 정의
 #의사 캐릭터 가져오기
 doctor_character = pygame.image.load("character_image\\sub_dummy.png")
 doctor_character_size = doctor_character.get_rect().size
@@ -44,6 +54,16 @@ doctor_character_height = doctor_character_size[1]
 doctor_x_pos = width / 2 + width / 3
 doctor_y_pos = height / 2 - doctor_character_height /2
 
+#의사 클래스 만들어주기
+class Doctor(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load("character_image\\sub_dummy.png")
+        self.image = pygame.transform.scale(self.image, (doctor_character_width, doctor_character_height))
+        self.rect = self.image.get_rect()
+        self.rect.centerx = doctor_x_pos
+        self.rect.centery = doctor_y_pos
+doctor = Doctor()#의사 클래스 변수로 정의
 #의사와 주인공 상호작용
 doctor_meet_main = False
 
@@ -55,6 +75,8 @@ main_to_y = 0
 pygame.display.set_icon(game_icon)
 # 게임반복
 while  True:
+    doctor = Doctor()
+    user = main()
     if map_lotate == 0:
         screen.blit(background, (0, 0))  #배경 색
     
@@ -116,7 +138,7 @@ while  True:
     main_x_pos += main_to_x
     main_y_pos += main_to_y
     #주인공 의사 충돌 확인
-    if map_lotate == 0 and doctor_x_pos - main_x_pos < 64 and doctor_y_pos - main_y_pos < 64:
+    if map_lotate == 0 and pygame.sprite.collide_rect(user, doctor):
         print("의사 : 왔는가")
         map_lotate += 1
         main_x_pos = 0
