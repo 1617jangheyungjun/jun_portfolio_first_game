@@ -13,12 +13,6 @@ game_icon = pygame.image.load("icon\\icon.png")
 #배경 그림 가져오기
 background = pygame.image.load("bg_image\\test.png")
 sub_background = pygame.image.load("bg_image\\2test.png")
-#책상 그림 가져오기
-first_desk = pygame.image.load("object\\desk.png")
-first_desk_size = first_desk.get_rect().size
-first_desk_width = first_desk_size[0]
-first_desk_height = first_desk_size[1]
-desk = 0
 # 게임구성
 pygame.init()
 fps = 60
@@ -64,6 +58,22 @@ class Doctor(pygame.sprite.Sprite):
         self.rect.centerx = doctor_x_pos
         self.rect.centery = doctor_y_pos
 doctor = Doctor()#의사 클래스 변수로 정의
+#책상 그림 가져오기
+first_desk = pygame.image.load("object\\desk.png")
+first_desk_size = first_desk.get_rect().size
+first_desk_width = first_desk_size[0]
+first_desk_height = first_desk_size[1]
+desk_x_pos = 1280
+desk_y_pos = height / 2 - first_desk_height / 2
+#책상 클래스 만들어주기
+class Desk(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load("object\\desk.png")
+        self.image = pygame.transform.scale(self.image, (first_desk_width, first_desk_height))
+        self.rect = self.image.get_rect()
+        self.rect.centerx = desk_x_pos
+        self.rect.centery = desk_y_pos
 #의사와 주인공 상호작용
 doctor_meet_main = False
 
@@ -77,6 +87,7 @@ pygame.display.set_icon(game_icon)
 while  True:
     doctor = Doctor()
     user = main()
+    desk = Desk()
     if map_lotate == 0:
         screen.blit(background, (0, 0))  #배경 색
     
@@ -90,8 +101,6 @@ while  True:
         screen.blit(main_character, (main_x_pos, main_y_pos))
     #책상위치 가져오기
     if map_lotate == 0:
-        desk_x_pos = 1280
-        desk_y_pos = height / 2 - first_desk_height / 2
         screen.blit(first_desk, (desk_x_pos, desk_y_pos))
     for event in pygame.event.get():
         #게임 종료
@@ -145,16 +154,6 @@ while  True:
         main_y_pos = height / 2
         Communicate = 1
         doctor_meet_main = True
-    #의사 클래스 제작
-    class doctor(pygame.sprite.Sprite):
-        def __init__(self):#클래스 초기화
-            pygame.sprite.Sprite.__init__(self) #스프라이트 초기화
-            self.image = pygame.image.load("character_image\\sub_dummy.png")
-            self.image = pygame.transform.scale(self.image, (doctor_character_width, doctor_character_height))
-            self.rect = self.image.get_rect()
-            self.rect.centerx = doctor_x_pos
-            self.rect.centery = doctor_y_pos
-
 
     if map_lotate == 0 and doctor_meet_main == False:
         print("의사와 대화해 보자")
@@ -165,8 +164,15 @@ while  True:
     
     
     #책상 못지나가게
-    if map_lotate == 0 and desk_x_pos - main_x_pos == 0:
-        left_crash = 1
+    if map_lotate == 0 and pygame.sprite.collide_rect(user, desk):
+        if main_to_x == 5:
+            main_x_pos = main_x_pos - 5
+        elif main_to_x == -5:
+            main_x_pos = main_x_pos + 5
+        elif main_to_y == 5:
+            main_y_pos = main_y_pos - 5
+        elif main_to_y == -5:
+            main_y_pos = main_y_pos + 5
     if map_lotate == 0 and desk_x_pos - main_x_pos == -first_desk_width:
         right_crash = 1
 #게임반복 뒤
