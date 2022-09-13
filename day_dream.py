@@ -4,10 +4,12 @@ import sys
 #변수불러오기
 map_lotate = 0
 Communicate = 0
-right_x_crash = 0
-left_x_crash = 0
 up_y_crash = 0
 down_y_crash = 0
+right_desk_crash = False
+left_desk_crash = False
+up_desk_crash = False
+down_desk_crash = False
 #아이콘 그림 가져오기
 game_icon = pygame.image.load("icon\\icon.png")
 #배경 그림 가져오기
@@ -70,7 +72,6 @@ class Desk(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load("object\\desk.png")
-        self.image = pygame.transform.scale(self.image, (first_desk_width, first_desk_height))
         self.rect = self.image.get_rect()
         self.rect.centerx = desk_x_pos
         self.rect.centery = desk_y_pos
@@ -90,7 +91,7 @@ while  True:
     desk = Desk()
     if map_lotate == 0:
         screen.blit(background, (0, 0))  #배경 색
-    
+        screen.blit(first_desk, (desk_x_pos, desk_y_pos))
         screen.blit(main_character, (main_x_pos, main_y_pos))
 
         screen.blit(doctor_character, (doctor_x_pos, doctor_y_pos))
@@ -99,9 +100,6 @@ while  True:
         screen.blit(sub_background, (0, 0))
 
         screen.blit(main_character, (main_x_pos, main_y_pos))
-    #책상위치 가져오기
-    if map_lotate == 0:
-        screen.blit(first_desk, (desk_x_pos, desk_y_pos))
     for event in pygame.event.get():
         #게임 종료
         if event.type == pygame.KEYDOWN:
@@ -110,19 +108,19 @@ while  True:
                 sys.exit()
         #주인공 캐릭터 움직임
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_a and right_x_crash == 0:
+            if event.key == pygame.K_a:
                 if main_to_x == 5:
                     main_to_x = 0
                 main_to_x -= 5
-            elif event.key == pygame.K_d and left_x_crash == 0:
+            elif event.key == pygame.K_d:
                 if main_to_x == -5:
                     main_to_x = 0
                 main_to_x += 5
-            elif event.key == pygame.K_w and down_y_crash == 0:
+            elif event.key == pygame.K_w:
                 if main_to_y == 5:
                     main_to_y = 0
                 main_to_y -= 5
-            elif event.key == pygame.K_s and up_y_crash == 0:
+            elif event.key == pygame.K_s:
                 if main_to_y == -5:
                     main_to_y = 0
                 main_to_y += 5
@@ -162,19 +160,18 @@ while  True:
         print("서사")
         Communicate = 0
     
-    
+    print(main_x_pos)
     #책상 못지나가게
     if map_lotate == 0 and pygame.sprite.collide_rect(user, desk):
         if main_to_x == 5:
             main_x_pos = main_x_pos - 5
-        elif main_to_x == -5:
+        if main_to_x == -5:
             main_x_pos = main_x_pos + 5
-        elif main_to_y == 5:
+        if main_to_y == 5:
             main_y_pos = main_y_pos - 5
-        elif main_to_y == -5:
+        if main_to_y == -5:
             main_y_pos = main_y_pos + 5
-    if map_lotate == 0 and desk_x_pos - main_x_pos == -first_desk_width:
-        right_crash = 1
+            
 #게임반복 뒤
 
     pygame.display.flip()
