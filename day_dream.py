@@ -66,7 +66,7 @@ class Player:
                     if self.move_y == -5:
                         continue
                     self.move_y = 0
-        self.playerpos = [self.playerpos[0] + self.move_x, self.playerpos[1] + self.move_y]
+            self.playerpos = [self.playerpos[0] + self.move_x, self.playerpos[1] + self.move_y]
         screen.blit(self.image, self.playerpos)
 
 class Doctor:
@@ -95,28 +95,27 @@ class Timer:
 
         return elapsed
 
-def main():
-    running = 1
-    doctor = Doctor()
-    user = Player()
-    map_lotate = 0
+
+running = 1
+doctor = Doctor()
+user = Player()
+map_lotate = 0
 
 
-    timer = Timer()
-    timer.start()
+timer = Timer()
+timer.start()
 
-    while running:
-        #게임 종료
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
-        if map_lotate == 0:
+while running:
+    #게임 종료
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                sys.exit()
+    if map_lotate == 0:
 
-            screen.blit(background, (0,0))
+        screen.blit(background, (0,0))
 
-            doctor.draw()
-            user.draw()
+        doctor.draw()
+        user.draw()
         pygame.display.update()
-main()
