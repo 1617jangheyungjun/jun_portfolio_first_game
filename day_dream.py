@@ -33,17 +33,38 @@ class Player:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
-                    self.move_x -= 3
+                    if self.move_x == 5:
+                        self.move_x = 0
+                    self.move_x -= 5
                 elif event.key == pygame.K_d:
-                    self.move_x += 3
+                    if self.move_x == -5:
+                        self.move_x = 0
+                    self.move_x += 5
                 elif event.key == pygame.K_w:
-                    self.move_y -= 3
+                    if self.move_y == 5:
+                        self.move_y = 0
+                    self.move_y -= 5
                 elif event.key == pygame.K_s:
-                    self.move_y += 3
+                    if self.move_y == -5:
+                        self.move_y = 0
+                    self.move_y += 5
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a or event.key == pygame.K_d:
+                if event.key == pygame.K_a:
+                    if self.move_x == 5:
+                        continue
                     self.move_x = 0
-                elif event.key == pygame.K_w or event.key == pygame.K_s:
+                
+                elif event.key == pygame.K_d:
+                    if self.move_x == -5:
+                        continue
+                    self.move_x = 0
+                elif event.key == pygame.K_w:
+                    if self.move_y == 5:
+                        continue
+                    self.move_y = 0
+                elif event.key == pygame.K_s:
+                    if self.move_y == -5:
+                        continue
                     self.move_y = 0
         self.playerpos = [self.playerpos[0] + self.move_x, self.playerpos[1] + self.move_y]
         screen.blit(self.image, self.playerpos)
