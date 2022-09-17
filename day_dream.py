@@ -18,56 +18,52 @@ pygame.display.set_caption("** day dream **")
 pygame.display.update()
 current_path = os.path.dirname(__file__)
 image_path = os.path.join(current_path, 'images')
-
 class Player:
     playerpos = [0, height / 2] #주인공 초기 위치
-    move_x = 0
-    move_y = 0
+    character_x_pos = 0
+    character_y_pos = height / 2
+    character_to_x_LEFT=0
+    character_to_x_RIGHT=0
+    character_to_y_up = 0
+    character_to_y_down = 0
     
     def __init__(self):
-        self.image = pygame.image.load(os.path.join(current_path1 + "\\character_image\\dummy.png")) #주인공 그림을 받아옴
+        self.image = pygame.image.load(os.path.join(current_path1 + '\\character_image\\dummy.png')) #주인공 그림을 받아옴
         self.rect = pygame.Rect(self.image.get_rect())      #주인공을 사각형으로 받음
         self.mentality = 0      #주인공 정신도 수준
 
-    def draw(self):
-        for event in pygame.event.get():
+    def draw(self, event_list):
+        # 수정1 : 기존의 character_to_x 를 왼쪽 방향, 오른쪽 방향 변수 2개로 나눔
+        for event in event_list:
+
+            # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
-                    if self.move_x == 5:
-                        self.move_x = 0
-                    self.move_x -= 5
+                    self.character_to_x_LEFT -= 3 # 바뀐 부분
                 elif event.key == pygame.K_d:
-                    if self.move_x == -5:
-                        self.move_x = 0
-                    self.move_x += 5
-                elif event.key == pygame.K_w:
-                    if self.move_y == 5:
-                        self.move_y = 0
-                    self.move_y -= 5
+                    self.character_to_x_RIGHT += 3 # 바뀐 부분
+
                 elif event.key == pygame.K_s:
-                    if self.move_y == -5:
-                        self.move_y = 0
-                    self.move_y += 5
+                    self.character_to_y_up += 3 # 바뀐 부분
+                elif event.key == pygame.K_w:
+                    self.character_to_y_down -= 3 # 바뀐 부분
+
+            # 수정3 : 키에서 손을 뗄 때 LEFT, RIGHT 를 각각 처리
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a:
-                    if self.move_x == 5:
-                        continue
-                    self.move_x = 0
-                
+                if event.key == pygame.K_a: # 이 부분은 모두 다 바뀜
+                    self.character_to_x_LEFT = 0
                 elif event.key == pygame.K_d:
-                    if self.move_x == -5:
-                        continue
-                    self.move_x = 0
-                elif event.key == pygame.K_w:
-                    if self.move_y == 5:
-                        continue
-                    self.move_y = 0
+                    self.character_to_x_RIGHT = 0
                 elif event.key == pygame.K_s:
-                    if self.move_y == -5:
-                        continue
-                    self.move_y = 0
-            self.playerpos = [self.playerpos[0] + self.move_x, self.playerpos[1] + self.move_y]
-        screen.blit(self.image, self.playerpos)
+                    self.character_to_y_down = 0
+                elif event.key == pygame.K_w:
+                    self.character_to_y_up = 0
+
+
+        # 수정4 : 두 변수의 값을 모두 더함
+        self.character_x_pos += self.character_to_x_LEFT + self.character_to_x_RIGHT
+        self.character_y_pos += self.character_to_y_up + self.character_to_y_down
+        screen.blit(self.image, (self.character_x_pos, self.character_y_pos))
 
 class Doctor:
     doctorpos = [1800, height / 2] #의사 초기 위치
@@ -94,20 +90,19 @@ class Timer:
             elapsed += time.time() - self.last_start_time #현재 새로운 시간을 받고 그 시간에서 마지막 시간을 뺴서 몇초가 남았는지 elapsed에 저장 경과됨 시간 반환
 
         return elapsed
-
 def main():
     running = 1
     doctor = Doctor()
     user = Player()
     map_lotate = 0
-
+    event_list = pygame.event.get()
 
     timer = Timer()
     timer.start()
 
     while running:
         #게임 종료
-        for event in pygame.event.get():
+        for event in event_list:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
@@ -117,8 +112,6 @@ def main():
             screen.blit(background, (0,0))
 
             doctor.draw()
-            user.draw()
+            user.draw(event_list)
             pygame.display.update()
-        pygame.display.flip()
-        fpsClock.tick(fps)
 main()
