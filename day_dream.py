@@ -55,9 +55,9 @@ class Player:
                 elif event.key == pygame.K_d:
                     self.character_to_x_RIGHT = 0
                 elif event.key == pygame.K_s:
-                    self.character_to_y_down = 0
-                elif event.key == pygame.K_w:
                     self.character_to_y_up = 0
+                elif event.key == pygame.K_w:
+                    self.character_to_y_down = 0
 
 
         # 수정4 : 두 변수의 값을 모두 더함
@@ -95,13 +95,12 @@ def main():
     doctor = Doctor()
     user = Player()
     map_lotate = 0
-    event_list = pygame.event.get()
-
     timer = Timer()
     timer.start()
 
     while running:
         #게임 종료
+        event_list = pygame.event.get()
         for event in event_list:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
