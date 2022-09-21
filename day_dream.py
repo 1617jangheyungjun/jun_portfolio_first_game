@@ -21,6 +21,7 @@ image_path = os.path.join(current_path, 'images')
 
 #주인공 클래스 작성
 class Player:
+    playerpos = [0, height / 2] #주인공 초기 위치
     character_x_pos = 0
     character_y_pos = height / 2
     character_to_x_LEFT=0
@@ -39,7 +40,7 @@ class Player:
         self.rect.centery = self.character_y_pos
         self.mentality = 0      #주인공 정신도 수준
 
-    def draw(self, event_list, character_x_pos, character_y_pos):
+    def draw(self, event_list):
         self.rect = pygame.Rect(self.image.get_rect())  
         self.rect.centerx = self.character_x_pos
         self.rect.centery = self.character_y_pos
@@ -73,7 +74,7 @@ class Player:
         # 수정4 : 두 변수의 값을 모두 더함
         self.character_x_pos += self.character_to_x_LEFT + self.character_to_x_RIGHT
         self.character_y_pos += self.character_to_y_up + self.character_to_y_down
-        screen.blit(self.image, (character_x_pos, character_y_pos))
+        screen.blit(self.image, (self.character_x_pos, self.character_y_pos))
 
         if self.character_x_pos < 0:
             self.character_x_pos = 0
@@ -144,7 +145,7 @@ def Comu(map_lotate):
     
     
         
-def main(map_lotate, player_x_pos1, player_y_pos1):
+def main(map_lotate):
     running = 1
     doctor = Doctor()
     user = Player()
@@ -156,44 +157,9 @@ def main(map_lotate, player_x_pos1, player_y_pos1):
     comu_width = comu_button_size[0]
     comu_height = comu_button_size[1]
     click_comu_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\click_community_box.png'))
-    character_to_x_left = 0
-    character_to_x_right = 0
-    character_to_y_DOWN = 0
-    character_to_y_UP = 0
     while running:
         #게임 종료
         event_list = pygame.event.get()
-        for event in event_list:
-
-            # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:
-                    character_to_x_left -= 1.5 # 바뀐 부분
-                elif event.key == pygame.K_d:
-                    character_to_x_right += 1.5 # 바뀐 부분
-
-                elif event.key == pygame.K_s:
-                    character_to_y_UP += 1.5 # 바뀐 부분
-                elif event.key == pygame.K_w:
-                    character_to_y_DOWN -= 1.5 # 바뀐 부분
-
-            # 수정3 : 키에서 손을 뗄 때 LEFT, RIGHT 를 각각 처리
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a: # 이 부분은 모두 다 바뀜
-                    character_to_x_left = 0
-                elif event.key == pygame.K_d:
-                   character_to_x_right = 0
-                elif event.key == pygame.K_s:
-                    character_to_y_UP = 0
-                elif event.key == pygame.K_w:
-                    character_to_y_DOWN = 0
-  
-
-        # 수정4 : 두 변수의 값을 모두 더함
-        player_x_pos1 += character_to_x_left + character_to_x_right
-        player_y_pos1 += character_to_y_UP + character_to_y_DOWN
-
-        
         for event in event_list:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -204,7 +170,7 @@ def main(map_lotate, player_x_pos1, player_y_pos1):
             screen.blit(background, (0,0))
 
             doctor.draw()
-            user.draw(event_list, player_x_pos1, player_y_pos1)
+            user.draw(event_list)
 
             if pygame.sprite.collide_rect(user, doctor):
                 doctor_meat = 1
@@ -219,7 +185,7 @@ def main(map_lotate, player_x_pos1, player_y_pos1):
             screen.blit(background, (0,0))
 
             doctor.draw()
-            user.draw(event_list, player_x_pos1, player_y_pos1)
+            user.draw(event_list)
 
             if pygame.sprite.collide_rect(user, doctor):
                 doctor_meat = 1
@@ -227,8 +193,8 @@ def main(map_lotate, player_x_pos1, player_y_pos1):
                 doctor_meat = 0
 
             if doctor_meat == 1:
-                community = Button(comu_image,1664, height / 2 - 128, comu_width, comu_height, click_comu_image,1664,height / 2 - 128, Comu(1))
+                community = Button(comu_image,1664, height / 2 - 128, comu_width, comu_height, click_comu_image,1664,height / 2 - 128, Comu)
             print("1")
             pygame.display.update()
                 
-main(0, 0, height / 2)
+main(0)
