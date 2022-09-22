@@ -102,6 +102,21 @@ class Doctor:
     def draw(self):      
         screen.blit(self.image, self.doctorpos)      #의사를 초기위치에 그림
 
+#오브젝트클래스 작성
+class Object:
+    def draw(image, object_xpos, object_ypos):
+        image3 = image
+        image1 = pygame.image.load(image3)
+        image_size = image1.get_rect().size
+        object_width = image_size[0]
+        object_height = image_size[1]
+        image3 = pygame.transform.scale(image3, (object_width, object_height))
+        rect = pygame.Rect(image3.get_rect())  
+        rect.centerx = object_xpos
+        rect.centery = object_ypos
+        screen.blit(image3,(object_xpos, object_ypos))
+    
+
 
 #타이머 클래스 작성
 class Timer:
@@ -150,6 +165,7 @@ def main(map_lotate):
     doctor = Doctor()
     user = Player()
     timer = Timer()
+    object = Object()
     timer.start()
     doctor_meat = 0
     comu_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\community_box.png'))
@@ -157,6 +173,7 @@ def main(map_lotate):
     comu_width = comu_button_size[0]
     comu_height = comu_button_size[1]
     click_comu_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\click_community_box.png'))
+    desk_image = '\\object\\desk.png'
     while running:
         #게임 종료
         event_list = pygame.event.get()
@@ -171,6 +188,7 @@ def main(map_lotate):
 
             doctor.draw()
             user.draw(event_list)
+            object.draw(desk_image, [1490, 230])
 
             if pygame.sprite.collide_rect(user, doctor):
                 doctor_meat = 1
@@ -193,7 +211,7 @@ def main(map_lotate):
                 doctor_meat = 0
 
             if doctor_meat == 1:
-                community = Button(comu_image,1664, height / 2 - 128, comu_width, comu_height, click_comu_image,1664,height / 2 - 128, Comu)
+                community = Button(comu_image,1664, height / 2 - 128, comu_width, comu_height, click_comu_image,1664,height / 2 - 128, Comu(1))
             print("1")
             pygame.display.update()
                 
