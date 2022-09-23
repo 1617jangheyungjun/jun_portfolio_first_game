@@ -50,14 +50,14 @@ class Player:
             # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
-                    self.character_to_x_LEFT -= 1.5 # 바뀐 부분
+                    self.character_to_x_LEFT -= 2 # 바뀐 부분
                 elif event.key == pygame.K_d:
-                    self.character_to_x_RIGHT += 1.5 # 바뀐 부분
+                    self.character_to_x_RIGHT += 2 # 바뀐 부분
 
                 elif event.key == pygame.K_s:
-                    self.character_to_y_up += 1.5 # 바뀐 부분
+                    self.character_to_y_up += 2 # 바뀐 부분
                 elif event.key == pygame.K_w:
-                    self.character_to_y_down -= 1.5 # 바뀐 부분
+                    self.character_to_y_down -= 2 # 바뀐 부분
 
             # 수정3 : 키에서 손을 뗄 때 LEFT, RIGHT 를 각각 처리
             if event.type == pygame.KEYUP:
@@ -104,17 +104,35 @@ class Doctor:
 
 #오브젝트클래스 작성
 class Object:
-    def draw(image, object_xpos, object_ypos):
-        image3 = image
-        image1 = pygame.image.load(image3)
-        image_size = image1.get_rect().size
-        object_width = image_size[0]
-        object_height = image_size[1]
-        image3 = pygame.transform.scale(image3, (object_width, object_height))
-        rect = pygame.Rect(image3.get_rect())  
-        rect.centerx = object_xpos
-        rect.centery = object_ypos
-        screen.blit(image3,(object_xpos, object_ypos))
+    def draw(self,image ,image_size, object_xpos, object_ypos, event_list):
+        if image_size == False:
+            screen.blit(image,(object_xpos, object_ypos))
+        
+        else:
+            object_width = image_size[0]
+            object_height = image_size[1]
+            image = pygame.transform.scale(image, (object_width, object_height))
+            rect = pygame.Rect(image.get_rect())  
+            rect.centerx = object_xpos
+            rect.centery = object_ypos
+            screen.blit(image,(object_xpos, object_ypos))
+            user = Player()
+            object = Object()
+        
+            if pygame.sprite.collide_rect(user, object):
+                for event in event_list:
+
+                    # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_a:
+                            user.character_x_pos = object_xpos - 64 # 바뀐 부분
+                        elif event.key == pygame.K_d:
+                            user.character_x_pos = object_xpos + 64 # 바뀐 부분
+
+                        elif event.key == pygame.K_s:
+                            user.character_y_pos = object_ypos - 64 # 바뀐 부분
+                        elif event.key == pygame.K_w:
+                            user.character_y_pos = object_ypos + 64
     
 
 
@@ -139,23 +157,42 @@ class Timer:
 
 #버튼 클래스 작성
 class Button:
-    def __init__(self, image_in,x,y,width,height,image_act,x_act,y_act,action=None):
+    def __init__(self,event_list,image_in,x,y,width,height,image_act,x_act,y_act,click):
         mouse = pygame.mouse.get_pos()
-        click = pygame.mouse.get_pressed()
         if x + width > mouse[0] > x and y + height > mouse[1] > y:
-            screen.blit(image_act,(x_act, y_act))  
-            if click [0] and action != None:
-                time.sleep(1)
-                action()
+            screen.blit(image_act,(x_act, y_act))
+            for event in event_list:
+                if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                        screen.blit(click,(x_act, y_act))
+                        pygame.display.update()
+                        time.sleep(0.2)
+                        Comu(1)
         else:
             screen.blit(image_in, (x,y))
 #버튼 이벤트 작성
 
 def Comu(map_lotate):
-    if map_lotate == 1:
-        map_lotate = 1
-        main(map_lotate)
-            
+    community_box = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\comunity.png'))
+    end23 = False
+    while map_lotate == 1:
+        screen.blit(community_box, (0, 0))
+        event_list = pygame.event.get()
+        
+        #게임 종료
+        for event in event_list:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+        #대화 넘김
+        for event in event_list:
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_KP_ENTER:
+                    break
+        pygame.display.update()
+
+        
+        
 
     
     
@@ -173,7 +210,11 @@ def main(map_lotate):
     comu_width = comu_button_size[0]
     comu_height = comu_button_size[1]
     click_comu_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\click_community_box.png'))
-    desk_image = '\\object\\desk.png'
+    click_tocomu_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\community_box_click.png'))
+    desk_image =  pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\desk.png'))
+    flower_pot = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\flowerpot.png'))
+    desk_image_size = desk_image.get_rect().size
+    flower_pot_size = flower_pot.get_rect().size
     while running:
         #게임 종료
         event_list = pygame.event.get()
@@ -188,7 +229,9 @@ def main(map_lotate):
 
             doctor.draw()
             user.draw(event_list)
-            object.draw(desk_image, [1490, 230])
+            object.draw(desk_image,desk_image_size, 1320, 340, event_list)
+            object.draw(flower_pot,flower_pot_size, 5, 1013, event_list)
+            object.draw(flower_pot ,flower_pot_size, 5, 8, event_list)
 
             if pygame.sprite.collide_rect(user, doctor):
                 doctor_meat = 1
@@ -196,23 +239,10 @@ def main(map_lotate):
                 doctor_meat = 0
 
             if doctor_meat == 1:
-                community = Button(comu_image,1664, height / 2 - 128, comu_width, comu_height, click_comu_image,1664,height / 2 - 128, Comu(1))
+                community = Button(event_list, comu_image,1664, height / 2 - 128, comu_width, comu_height, click_comu_image,1664,height / 2 - 128, click_tocomu_image)
             pygame.display.update()
 
-        if map_lotate == 1:
-            screen.blit(background, (0,0))
-
-            doctor.draw()
-            user.draw(event_list)
-
-            if pygame.sprite.collide_rect(user, doctor):
-                doctor_meat = 1
-            else:
-                doctor_meat = 0
-
-            if doctor_meat == 1:
-                community = Button(comu_image,1664, height / 2 - 128, comu_width, comu_height, click_comu_image,1664,height / 2 - 128, Comu(1))
-            print("1")
+        
             pygame.display.update()
                 
-main(0)
+main(0) 
