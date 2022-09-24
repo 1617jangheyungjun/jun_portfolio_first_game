@@ -103,37 +103,33 @@ class Doctor:
         screen.blit(self.image, self.doctorpos)      #의사를 초기위치에 그림
 
 #오브젝트클래스 작성
-class Object:
-    def draw(self,image ,image_size, object_xpos, object_ypos, event_list):
+class Objecter:
+    def draw(self,image ,image_size, objecter_xpos, objecter_ypos, event_list):
+        objecter_width = image_size[0]
+        objecter_height = image_size[1]
+        image = pygame.transform.scale(image, (objecter_width, objecter_height))
+        rect = pygame.Rect(image.get_rect())  
+        rect.centerx = objecter_xpos
+        rect.centery = objecter_ypos
         if image_size == False:
-            screen.blit(image,(object_xpos, object_ypos))
+            screen.blit(image,(objecter_xpos, objecter_ypos))
         
         else:
-            object_width = image_size[0]
-            object_height = image_size[1]
-            image = pygame.transform.scale(image, (object_width, object_height))
-            rect = pygame.Rect(image.get_rect())  
-            rect.centerx = object_xpos
-            rect.centery = object_ypos
-            screen.blit(image,(object_xpos, object_ypos))
-            user = Player()
-            object = Object()
-        
-            if pygame.sprite.collide_rect(user, object):
-                for event in event_list:
+            # if pygame.sprite.collide_rect(Player(), Objecter()):
+            #     for event in event_list:
 
-                    # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_a:
-                            user.character_x_pos = object_xpos - 64 # 바뀐 부분
-                        elif event.key == pygame.K_d:
-                            user.character_x_pos = object_xpos + 64 # 바뀐 부분
+            #         # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
+            #         if event.type == pygame.KEYDOWN:
+            #             if event.key == pygame.K_a:
+            #                 Player().character_x_pos = objecter_xpos - 64 # 바뀐 부분
+            #             elif event.key == pygame.K_d:
+            #                 Player().character_x_pos = objecter_xpos + 64 # 바뀐 부분
 
-                        elif event.key == pygame.K_s:
-                            user.character_y_pos = object_ypos - 64 # 바뀐 부분
-                        elif event.key == pygame.K_w:
-                            user.character_y_pos = object_ypos + 64
-    
+            #             elif event.key == pygame.K_s:
+            #                 Player().character_y_pos = objecter_ypos - 64 # 바뀐 부분
+            #             elif event.key == pygame.K_w:
+            #                 Player().character_y_pos = objecter_ypos + 64
+            screen.blit(image,(objecter_xpos, objecter_ypos))
 
 
 #타이머 클래스 작성
@@ -202,7 +198,7 @@ def main(map_lotate):
     doctor = Doctor()
     user = Player()
     timer = Timer()
-    object = Object()
+    objecter = Objecter()
     timer.start()
     doctor_meat = 0
     comu_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\community_box.png'))
@@ -229,20 +225,19 @@ def main(map_lotate):
 
             doctor.draw()
             user.draw(event_list)
-            object.draw(desk_image,desk_image_size, 1320, 340, event_list)
-            object.draw(flower_pot,flower_pot_size, 5, 1013, event_list)
-            object.draw(flower_pot ,flower_pot_size, 5, 8, event_list)
+            objecter.draw(desk_image,desk_image_size, 1320, 340, event_list)
+            # object.__init__(flower_pot,flower_pot_size, 5, 1013, event_list)
+            # object.__init__(flower_pot ,flower_pot_size, 5, 8, event_list)
+
 
             if pygame.sprite.collide_rect(user, doctor):
-                doctor_meat = 1
+                    doctor_meat = 1
             else:
                 doctor_meat = 0
 
             if doctor_meat == 1:
                 community = Button(event_list, comu_image,1664, height / 2 - 128, comu_width, comu_height, click_comu_image,1664,height / 2 - 128, click_tocomu_image)
-            pygame.display.update()
 
-        
-            pygame.display.update()
+        pygame.display.update()
                 
 main(0) 
