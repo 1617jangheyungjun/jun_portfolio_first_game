@@ -105,30 +105,30 @@ class Doctor:
 #오브젝트클래스 작성
 class Objecter:
     def draw(self,image ,image_size, objecter_xpos, objecter_ypos, event_list):
-        objecter_width = image_size[0]
-        objecter_height = image_size[1]
-        image = pygame.transform.scale(image, (objecter_width, objecter_height))
-        rect = pygame.Rect(image.get_rect())  
-        rect.centerx = objecter_xpos
-        rect.centery = objecter_ypos
         if image_size == False:
             screen.blit(image,(objecter_xpos, objecter_ypos))
         
         else:
-            # if pygame.sprite.collide_rect(Player(), Objecter()):
-            #     for event in event_list:
+            objecter_width = image_size[0]
+            objecter_height = image_size[1]
+            image = pygame.transform.scale(image, (objecter_width, objecter_height))
+            rect = image.get_rect()  
+            rect.centerx = objecter_xpos
+            rect.centery = objecter_ypos
+            if pygame.sprite.collide_rect(Player(), Objecter()):
+                for event in event_list:
 
-            #         # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
-            #         if event.type == pygame.KEYDOWN:
-            #             if event.key == pygame.K_a:
-            #                 Player().character_x_pos = objecter_xpos - 64 # 바뀐 부분
-            #             elif event.key == pygame.K_d:
-            #                 Player().character_x_pos = objecter_xpos + 64 # 바뀐 부분
+                    # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_a:
+                            Player().character_x_pos = objecter_xpos - 64 # 바뀐 부분
+                        elif event.key == pygame.K_d:
+                            Player().character_x_pos = objecter_xpos + 64 # 바뀐 부분
 
-            #             elif event.key == pygame.K_s:
-            #                 Player().character_y_pos = objecter_ypos - 64 # 바뀐 부분
-            #             elif event.key == pygame.K_w:
-            #                 Player().character_y_pos = objecter_ypos + 64
+                        elif event.key == pygame.K_s:
+                            Player().character_y_pos = objecter_ypos - 64 # 바뀐 부분
+                        elif event.key == pygame.K_w:
+                            Player().character_y_pos = objecter_ypos + 64
             screen.blit(image,(objecter_xpos, objecter_ypos))
 
 
@@ -223,12 +223,11 @@ def main(map_lotate):
 
             screen.blit(background, (0,0))
 
+            objecter.draw(desk_image,desk_image_size, 1320, 340, event_list)
+            objecter.draw(flower_pot,flower_pot_size, 5, 1013, event_list)
+            objecter.draw(flower_pot ,flower_pot_size, 5, 8, event_list)
             doctor.draw()
             user.draw(event_list)
-            objecter.draw(desk_image,desk_image_size, 1320, 340, event_list)
-            # object.__init__(flower_pot,flower_pot_size, 5, 1013, event_list)
-            # object.__init__(flower_pot ,flower_pot_size, 5, 8, event_list)
-
 
             if pygame.sprite.collide_rect(user, doctor):
                     doctor_meat = 1
