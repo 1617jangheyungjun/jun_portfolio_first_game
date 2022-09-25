@@ -7,8 +7,7 @@ current_path1 = os.getcwd()
 game_icon = pygame.image.load("icon\\icon.png")
 #배경 그림 가져오기
 background = pygame.image.load("bg_image\\test.png")
-ingame_background = pygame.image.load("C:\\Users\plant\Desktop\\challinge\\git_programs\\bg_image\\hwajangsil.png")
-# 게임구성
+
 pygame.init()
 fps = 60
 fpsClock = pygame.time.Clock()
@@ -182,18 +181,25 @@ def Comu(map_lotate):
                     sys.exit()
         #대화 넘김
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_w:
+                if event.key == pygame. K_RETURN:
                     ingame()
         pygame.display.update()
 
         
-        
+#인게임
 def ingame():
     running = 1
     doctor = Doctor()
     user = Player()
     timer = Timer()
     objecter = Objecter()
+    mentality = 0
+    washstand = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\sameionda.png'))
+    washstand_size = washstand.get_rect().size
+    toilet = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\toilet.png'))
+    toilet_size = toilet.get_rect().size
+    ingame_background = pygame.image.load("C:\\Users\plant\Desktop\\challinge\\git_programs\\bg_image\\hwajangsil.png")
+# 게임구성
     while running:
         #게임 종료
         event_list = pygame.event.get()
@@ -204,9 +210,16 @@ def ingame():
                     sys.exit()
         screen.blit(ingame_background, (0,0))
         user.draw(event_list)
+        objecter.draw(washstand,washstand_size ,87, 0, event_list)
+        objecter.draw(washstand,washstand_size ,275, 0, event_list)
+        objecter.draw(washstand,washstand_size ,462, 0, event_list)
+        objecter.draw(toilet, toilet_size, 890, 0, event_list)
+        objecter.draw(toilet, toilet_size, 1149, 0, event_list)
+        objecter.draw(toilet, toilet_size, 1408, 0, event_list)
+        objecter.draw(toilet, toilet_size, 1667, 0, event_list)
         pygame.display.update()
     
-    
+#메인화면
         
 def main(map_lotate):
     running = 1
