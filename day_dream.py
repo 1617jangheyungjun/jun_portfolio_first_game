@@ -7,7 +7,7 @@ current_path1 = os.getcwd()
 game_icon = pygame.image.load("icon\\icon.png")
 #배경 그림 가져오기
 background = pygame.image.load("bg_image\\test.png")
-sub_background = pygame.image.load("bg_image\\2test.png")
+ingame_background = pygame.image.load("C:\\Users\plant\Desktop\\challinge\\git_programs\\bg_image\\hwajangsil.png")
 # 게임구성
 pygame.init()
 fps = 60
@@ -39,7 +39,7 @@ class Player:
         self.rect.centerx = self.character_x_pos
         self.rect.centery = self.character_y_pos
         self.mentality = 0      #주인공 정신도 수준
-
+        self.forin = 0
     def draw(self, event_list):
         self.rect = pygame.Rect(self.image.get_rect())  
         self.rect.centerx = self.character_x_pos
@@ -115,20 +115,20 @@ class Objecter:
             rect = image.get_rect()  
             rect.centerx = objecter_xpos
             rect.centery = objecter_ypos
-            if pygame.sprite.collide_rect(Player(), Objecter()):
-                for event in event_list:
+            # if pygame.sprite.collide_rect(Player(), Objecter()):
+            #     for event in event_list:
 
-                    # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_a:
-                            Player().character_x_pos = objecter_xpos - 64 # 바뀐 부분
-                        elif event.key == pygame.K_d:
-                            Player().character_x_pos = objecter_xpos + 64 # 바뀐 부분
+            #         # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
+            #         if event.type == pygame.KEYDOWN:
+            #             if event.key == pygame.K_a:
+            #                 Player().character_x_pos = objecter_xpos - 64 # 바뀐 부분
+            #             elif event.key == pygame.K_d:
+            #                 Player().character_x_pos = objecter_xpos + 64 # 바뀐 부분
 
-                        elif event.key == pygame.K_s:
-                            Player().character_y_pos = objecter_ypos - 64 # 바뀐 부분
-                        elif event.key == pygame.K_w:
-                            Player().character_y_pos = objecter_ypos + 64
+            #             elif event.key == pygame.K_s:
+            #                 Player().character_y_pos = objecter_ypos - 64 # 바뀐 부분
+            #             elif event.key == pygame.K_w:
+            #                 Player().character_y_pos = objecter_ypos + 64
             screen.blit(image,(objecter_xpos, objecter_ypos))
 
 
@@ -181,15 +181,30 @@ def Comu(map_lotate):
                     pygame.quit()
                     sys.exit()
         #대화 넘김
-        for event in event_list:
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_KP_ENTER:
-                    break
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    ingame()
         pygame.display.update()
 
         
         
-
+def ingame():
+    running = 1
+    doctor = Doctor()
+    user = Player()
+    timer = Timer()
+    objecter = Objecter()
+    while running:
+        #게임 종료
+        event_list = pygame.event.get()
+        for event in event_list:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+        screen.blit(ingame_background, (0,0))
+        user.draw(event_list)
+        pygame.display.update()
     
     
         
@@ -222,7 +237,6 @@ def main(map_lotate):
         if map_lotate == 0:
 
             screen.blit(background, (0,0))
-
             objecter.draw(desk_image,desk_image_size, 1320, 340, event_list)
             objecter.draw(flower_pot,flower_pot_size, 5, 1013, event_list)
             objecter.draw(flower_pot ,flower_pot_size, 5, 8, event_list)
@@ -240,3 +254,6 @@ def main(map_lotate):
         pygame.display.update()
                 
 main(0) 
+
+
+        
