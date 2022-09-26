@@ -28,6 +28,7 @@ class Player:
     character_to_y_up = 0
     character_to_y_down = 0
     width, height = 1920, 1080
+    clock = pygame.time.Clock()
     def __init__(self):
         self.image = pygame.image.load(os.path.join(current_path1 + '\\character_image\\dummy.png')) #주인공 그림을 받아옴
         self.character_size = self.image.get_rect().size
@@ -40,6 +41,7 @@ class Player:
         self.mentality = 0      #주인공 정신도 수준
         self.forin = 0
     def draw(self, event_list):
+        dt = self.clock.tick(60)
         self.rect = pygame.Rect(self.image.get_rect())  
         self.rect.centerx = self.character_x_pos
         self.rect.centery = self.character_y_pos
@@ -49,14 +51,14 @@ class Player:
             # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
-                    self.character_to_x_LEFT -= 2 # 바뀐 부분
+                    self.character_to_x_LEFT -= 0.4 # 바뀐 부분
                 elif event.key == pygame.K_d:
-                    self.character_to_x_RIGHT += 2 # 바뀐 부분
+                    self.character_to_x_RIGHT += 0.4 # 바뀐 부분
 
                 elif event.key == pygame.K_s:
-                    self.character_to_y_up += 2 # 바뀐 부분
+                    self.character_to_y_up += 0.4 # 바뀐 부분
                 elif event.key == pygame.K_w:
-                    self.character_to_y_down -= 2 # 바뀐 부분
+                    self.character_to_y_down -= 0.4 # 바뀐 부분
 
             # 수정3 : 키에서 손을 뗄 때 LEFT, RIGHT 를 각각 처리
             if event.type == pygame.KEYUP:
@@ -71,8 +73,8 @@ class Player:
   
 
         # 수정4 : 두 변수의 값을 모두 더함
-        self.character_x_pos += self.character_to_x_LEFT + self.character_to_x_RIGHT
-        self.character_y_pos += self.character_to_y_up + self.character_to_y_down
+        self.character_x_pos += self.character_to_x_LEFT * dt + self.character_to_x_RIGHT * dt
+        self.character_y_pos += self.character_to_y_up * dt + self.character_to_y_down * dt
         screen.blit(self.image, (self.character_x_pos, self.character_y_pos))
 
         if self.character_x_pos < 0:
@@ -130,29 +132,23 @@ class Objecter:
             #                 Player().character_y_pos = objecter_ypos + 64
             screen.blit(image,(objecter_xpos, objecter_ypos))
 
-
-#타이머 클래스 작성
-class Timer:
+class Toilet:
+    deskpos = [1408, 0] #책상 초기 위치
     def __init__(self):
-        self.elapsed = 0.0 #경과시간 저장
-        self.running = False   #진행중인가를 나타냄
-        self.last_start_time = None #현재시간 받는 변수(초기화 하기위해서 None타입이로둠)
-
-    def start(self):
-        if not self.running:  
-            self.running = True
-            self.last_start_time = time.time()   #게임이 실행중이라면 현재의 시간을 받음
-
-    def get_elapsed(self):
-        elapsed = self.elapsed
-        if self.running:
-            elapsed += time.time() - self.last_start_time #현재 새로운 시간을 받고 그 시간에서 마지막 시간을 뺴서 몇초가 남았는지 elapsed에 저장 경과됨 시간 반환
-
-        return elapsed
+        self.image = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\desk.png')) #의사의 이미지를 불러옴
+        self.desk_size = self.image.get_rect().size
+        self.desk_width = self.desk_size[0]
+        self.desk_height = self.desk_size[1]
+        self.image = pygame.transform.scale(self.image, (self.desk_width, self.desk_height))
+        self.rect = pygame.Rect(self.image.get_rect())  
+        self.rect.centerx = self.deskpos[0]
+        self.rect.centery = self.deskpos[1]+20
+    def draw(self):      
+        screen.blit(self.image, self.deskpos)
 
 #버튼 클래스 작성
 class Button:
-    def __init__(self,event_list,image_in,x,y,width,height,image_act,x_act,y_act,click):
+    def __init__(self,event_list,image_in,x,y,width,height,image_act,x_act,y_act,click, action):
         mouse = pygame.mouse.get_pos()
         if x + width > mouse[0] > x and y + height > mouse[1] > y:
             screen.blit(image_act,(x_act, y_act))
@@ -161,7 +157,8 @@ class Button:
                         screen.blit(click,(x_act, y_act))
                         pygame.display.update()
                         time.sleep(0.2)
-                        Comu(1)
+                        if action == "Comu":
+                            Comu(1)
         else:
             screen.blit(image_in, (x,y))
 #버튼 이벤트 작성
@@ -191,8 +188,8 @@ def ingame():
     running = 1
     doctor = Doctor()
     user = Player()
-    timer = Timer()
     objecter = Objecter()
+    toilet = Toilet()
     mentality = 0
     washstand = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\sameionda.png'))
     washstand_size = washstand.get_rect().size
@@ -215,9 +212,15 @@ def ingame():
         objecter.draw(washstand,washstand_size ,462, 0, event_list)
         objecter.draw(toilet, toilet_size, 890, 0, event_list)
         objecter.draw(toilet, toilet_size, 1149, 0, event_list)
-        objecter.draw(toilet, toilet_size, 1408, 0, event_list)
         objecter.draw(toilet, toilet_size, 1667, 0, event_list)
+        Toilet().draw()
         pygame.display.update()
+        if pygame.sprite.collide_rect(user, toilet):
+            print("만남")
+
+        else:
+            print("안만남")
+
     
 #메인화면
         
@@ -225,9 +228,7 @@ def main(map_lotate):
     running = 1
     doctor = Doctor()
     user = Player()
-    timer = Timer()
     objecter = Objecter()
-    timer.start()
     doctor_meat = 0
     comu_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\community_box.png'))
     comu_button_size = comu_image.get_rect().size
@@ -262,7 +263,7 @@ def main(map_lotate):
                 doctor_meat = 0
 
             if doctor_meat == 1:
-                community = Button(event_list, comu_image,1664, height / 2 - 128, comu_width, comu_height, click_comu_image,1664,height / 2 - 128, click_tocomu_image)
+                community = Button(event_list, comu_image,1664, height / 2 - 128, comu_width, comu_height, click_comu_image,1664,height / 2 - 128, click_tocomu_image, "Comu")
 
         pygame.display.update()
                 
