@@ -105,32 +105,38 @@ class Doctor:
 
 #오브젝트클래스 작성
 class Objecter:
-    def draw(self,image ,image_size, objecter_xpos, objecter_ypos, event_list):
-        if image_size == False:
-            screen.blit(image,(objecter_xpos, objecter_ypos))
-        
-        else:
-            objecter_width = image_size[0]
-            objecter_height = image_size[1]
-            image = pygame.transform.scale(image, (objecter_width, objecter_height))
-            rect = image.get_rect()  
-            rect.centerx = objecter_xpos
-            rect.centery = objecter_ypos
-            # if pygame.sprite.collide_rect(Player(), Objecter()):
-            #     for event in event_list:
+    def __init__(self,image ,image_size, objecter_xpos, objecter_ypos, event_list):
+            
+            self.objecter_width = image_size[0]
+            self.objecter_height = image_size[1]
+            self.image = pygame.transform.scale(image, (self.objecter_width, self.objecter_height))
+            self.rect = self.image.get_rect()  
+            self.objecter_xpos = objecter_xpos
+            self.objecter_ypos = objecter_ypos
+            self.rect.centerx = self.objecter_xpos
+            self.rect.centery = self.objecter_ypos
+            self.event_list = event_list
+            self.image_size = image_size
+            
+    def draw(self):
+        screen.blit(self.image,(self.objecter_xpos, self.objecter_ypos))
 
-            #         # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
-            #         if event.type == pygame.KEYDOWN:
-            #             if event.key == pygame.K_a:
-            #                 Player().character_x_pos = objecter_xpos - 64 # 바뀐 부분
-            #             elif event.key == pygame.K_d:
-            #                 Player().character_x_pos = objecter_xpos + 64 # 바뀐 부분
+    def collider1(self):
+         if pygame.sprite.collide_rect(Player(), Objecter(self.image ,self.image_size, self.objecter_xpos, self.objecter_ypos, self.event_list)):
+            print("닿음")
+            for event in self.event_list:
 
-            #             elif event.key == pygame.K_s:
-            #                 Player().character_y_pos = objecter_ypos - 64 # 바뀐 부분
-            #             elif event.key == pygame.K_w:
-            #                 Player().character_y_pos = objecter_ypos + 64
-            screen.blit(image,(objecter_xpos, objecter_ypos))
+                # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_a:
+                        Player().character_x_pos = self.objecter_xpos - 64 # 바뀐 부분
+                    elif event.key == pygame.K_d:
+                        Player().character_x_pos = self.objecter_xpos + 64 # 바뀐 부분
+
+                    elif event.key == pygame.K_s:
+                        Player().character_y_pos = self.objecter_ypos - 64 # 바뀐 부분
+                    elif event.key == pygame.K_w:
+                        Player().character_y_pos = self.objecter_ypos + 64
 
 class Toilet:
     deskpos = [1408, 0] #책상 초기 위치
@@ -215,20 +221,20 @@ def ingame():
         objecter.draw(toilet, toilet_size, 1667, 0, event_list)
         Toilet().draw()
         pygame.display.update()
-        if pygame.sprite.collide_rect(user, toilet):
-            print("만남")
+        # if pygame.sprite.collide_rect(user, toilet):
+        #     print("만남")
 
-        else:
-            print("안만남")
+        # else:
+        #     print("안만남")
 
     
 #메인화면
         
 def main(map_lotate):
+    event_list = pygame.event.get()
     running = 1
     doctor = Doctor()
     user = Player()
-    objecter = Objecter()
     doctor_meat = 0
     comu_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\community_box.png'))
     comu_button_size = comu_image.get_rect().size
@@ -240,6 +246,9 @@ def main(map_lotate):
     flower_pot = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\flowerpot.png'))
     desk_image_size = desk_image.get_rect().size
     flower_pot_size = flower_pot.get_rect().size
+    desk_objecter = Objecter(desk_image,desk_image_size, 1320, 340, event_list)
+    flower_pot_objecter = Objecter(flower_pot,flower_pot_size, 5, 1013, event_list)
+    flower_pot_objecter2 = Objecter(flower_pot,flower_pot_size, 5, 0, event_list)
     while running:
         #게임 종료
         event_list = pygame.event.get()
@@ -251,11 +260,15 @@ def main(map_lotate):
         if map_lotate == 0:
 
             screen.blit(background, (0,0))
-            objecter.draw(desk_image,desk_image_size, 1320, 340, event_list)
-            objecter.draw(flower_pot,flower_pot_size, 5, 1013, event_list)
-            objecter.draw(flower_pot ,flower_pot_size, 5, 8, event_list)
+            desk_objecter.draw()
+            desk_objecter.collider1()
+            flower_pot_objecter.draw()
+            flower_pot_objecter.collider1()
+            flower_pot_objecter2.draw()
+            flower_pot_objecter2.collider1()
             doctor.draw()
             user.draw(event_list)
+            
 
             if pygame.sprite.collide_rect(user, doctor):
                     doctor_meat = 1
