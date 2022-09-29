@@ -113,35 +113,33 @@ class Objecter:
             self.rect = self.image.get_rect()  
             self.objecter_xpos = objecter_xpos
             self.objecter_ypos = objecter_ypos
-            self.rect.centerx = self.objecter_xpos
-            self.rect.centery = self.objecter_ypos
+            self.rect.centerx = objecter_xpos
+            self.rect.centery = objecter_ypos
             self.event_list = event_list
             self.image_size = image_size
             
     def draw(self):
         screen.blit(self.image,(self.objecter_xpos, self.objecter_ypos))
+        # if pygame.sprite.collide_rect(Player(), Objecter(self.image ,self.image_size, self.objecter_xpos, self.objecter_ypos, self.event_list)):
+        #     print("닿음")
+        #     for event in self.event_list:
 
-    def collider1(self):
-         if pygame.sprite.collide_rect(Player(), Objecter(self.image ,self.image_size, self.objecter_xpos, self.objecter_ypos, self.event_list)):
-            print("닿음")
-            for event in self.event_list:
+        #         # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
+        #         if event.type == pygame.KEYDOWN:
+        #             if event.key == pygame.K_a:
+        #                 Player().character_x_pos = self.objecter_xpos - 64 # 바뀐 부분
+        #             elif event.key == pygame.K_d:
+        #                 Player().character_x_pos = self.objecter_xpos + 64 # 바뀐 부분
 
-                # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_a:
-                        Player().character_x_pos = self.objecter_xpos - 64 # 바뀐 부분
-                    elif event.key == pygame.K_d:
-                        Player().character_x_pos = self.objecter_xpos + 64 # 바뀐 부분
-
-                    elif event.key == pygame.K_s:
-                        Player().character_y_pos = self.objecter_ypos - 64 # 바뀐 부분
-                    elif event.key == pygame.K_w:
-                        Player().character_y_pos = self.objecter_ypos + 64
+        #             elif event.key == pygame.K_s:
+        #                 Player().character_y_pos = self.objecter_ypos - 64 # 바뀐 부분
+        #             elif event.key == pygame.K_w:
+        #                 Player().character_y_pos = self.objecter_ypos + 64
 
 class Toilet:
     deskpos = [1408, 0] #책상 초기 위치
     def __init__(self):
-        self.image = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\desk.png')) #의사의 이미지를 불러옴
+        self.image = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\toilet.png')) #의사의 이미지를 불러옴
         self.desk_size = self.image.get_rect().size
         self.desk_width = self.desk_size[0]
         self.desk_height = self.desk_size[1]
@@ -194,14 +192,19 @@ def ingame():
     running = 1
     doctor = Doctor()
     user = Player()
-    objecter = Objecter()
-    toilet = Toilet()
     mentality = 0
+    event_list = pygame.event.get()
     washstand = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\sameionda.png'))
     washstand_size = washstand.get_rect().size
     toilet = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\toilet.png'))
     toilet_size = toilet.get_rect().size
     ingame_background = pygame.image.load("C:\\Users\plant\Desktop\\challinge\\git_programs\\bg_image\\hwajangsil.png")
+    washstand_object = Objecter(washstand,washstand_size ,87, 0, event_list)
+    washstand2_object = Objecter(washstand,washstand_size ,275, 0, event_list)
+    washstand3_object = Objecter(washstand,washstand_size ,462, 0, event_list)
+    toilet_object = Objecter(toilet, toilet_size, 890, 0, event_list)
+    toilet2_object = Objecter(toilet, toilet_size, 1149, 0, event_list)
+    toilet3_object = Objecter(toilet, toilet_size, 1667, 0, event_list)
 # 게임구성
     while running:
         #게임 종료
@@ -213,16 +216,17 @@ def ingame():
                     sys.exit()
         screen.blit(ingame_background, (0,0))
         user.draw(event_list)
-        objecter.draw(washstand,washstand_size ,87, 0, event_list)
-        objecter.draw(washstand,washstand_size ,275, 0, event_list)
-        objecter.draw(washstand,washstand_size ,462, 0, event_list)
-        objecter.draw(toilet, toilet_size, 890, 0, event_list)
-        objecter.draw(toilet, toilet_size, 1149, 0, event_list)
-        objecter.draw(toilet, toilet_size, 1667, 0, event_list)
+        washstand_object.draw()
+        washstand2_object.draw()
+        washstand3_object.draw()
+        toilet_object.draw()
+        toilet2_object.draw()
+        toilet3_object.draw()
+
         Toilet().draw()
         pygame.display.update()
-        # if pygame.sprite.collide_rect(user, toilet):
-        #     print("만남")
+        if pygame.sprite.collide_rect(user, Toilet()):
+            print("만남")
 
         # else:
         #     print("안만남")
@@ -260,14 +264,12 @@ def main(map_lotate):
         if map_lotate == 0:
 
             screen.blit(background, (0,0))
-            desk_objecter.draw()
-            desk_objecter.collider1()
-            flower_pot_objecter.draw()
-            flower_pot_objecter.collider1()
-            flower_pot_objecter2.draw()
-            flower_pot_objecter2.collider1()
             doctor.draw()
             user.draw(event_list)
+            desk_objecter.draw()
+            flower_pot_objecter.draw()
+            flower_pot_objecter2.draw()
+
             
 
             if pygame.sprite.collide_rect(user, doctor):
