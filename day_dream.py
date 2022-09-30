@@ -120,21 +120,6 @@ class Objecter:
             
     def draw(self):
         screen.blit(self.image,(self.objecter_xpos, self.objecter_ypos))
-        # if pygame.sprite.collide_rect(Player(), Objecter(self.image ,self.image_size, self.objecter_xpos, self.objecter_ypos, self.event_list)):
-        #     print("닿음")
-        #     for event in self.event_list:
-
-        #         # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
-        #         if event.type == pygame.KEYDOWN:
-        #             if event.key == pygame.K_a:
-        #                 Player().character_x_pos = self.objecter_xpos - 64 # 바뀐 부분
-        #             elif event.key == pygame.K_d:
-        #                 Player().character_x_pos = self.objecter_xpos + 64 # 바뀐 부분
-
-        #             elif event.key == pygame.K_s:
-        #                 Player().character_y_pos = self.objecter_ypos - 64 # 바뀐 부분
-        #             elif event.key == pygame.K_w:
-        #                 Player().character_y_pos = self.objecter_ypos + 64
 
 class Toilet:
     deskpos = [1408, 0] #책상 초기 위치
@@ -270,7 +255,20 @@ def main(map_lotate):
             flower_pot_objecter.draw()
             flower_pot_objecter2.draw()
 
-            
+            for objecter in [desk_objecter, flower_pot_objecter, flower_pot_objecter2]:
+                if pygame.sprite.collide_rect(user, objecter):
+                    for event in event_list:
+                        # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
+                        if event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_a:
+                                user.character_x_pos = objecter.objecter_xpos + 64 # 바뀐 부분
+                            elif event.key == pygame.K_d:
+                                user.character_x_pos = objecter.objecter_xpos - 64 # 바뀐 부분
+
+                            elif event.key == pygame.K_s:
+                                user.character_y_pos = objecter.objecter_ypos + 64 # 바뀐 부분
+                            elif event.key == pygame.K_w:
+                                user.character_y_pos = objecter.objecter_ypos - 64
 
             if pygame.sprite.collide_rect(user, doctor):
                     doctor_meat = 1
