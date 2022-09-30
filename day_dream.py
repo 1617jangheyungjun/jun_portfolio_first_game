@@ -115,8 +115,6 @@ class Objecter:
             self.objecter_ypos = objecter_ypos
             self.rect.centerx = objecter_xpos
             self.rect.centery = objecter_ypos
-            self.event_list = event_list
-            self.image_size = image_size
             
     def draw(self):
         screen.blit(self.image,(self.objecter_xpos, self.objecter_ypos))
@@ -261,14 +259,14 @@ def main(map_lotate):
                         # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
                         if event.type == pygame.KEYDOWN:
                             if event.key == pygame.K_a:
-                                user.character_x_pos = objecter.objecter_xpos + 64 # 바뀐 부분
+                                user.character_x_pos = objecter.objecter_xpos + user.character_width # 바뀐 부분
                             elif event.key == pygame.K_d:
-                                user.character_x_pos = objecter.objecter_xpos - 64 # 바뀐 부분
+                                user.character_x_pos = objecter.objecter_xpos - user.character_width # 바뀐 부분
 
                             elif event.key == pygame.K_s:
-                                user.character_y_pos = objecter.objecter_ypos + 64 # 바뀐 부분
+                                user.character_y_pos = objecter.objecter_ypos - user.character_height # 바뀐 부분
                             elif event.key == pygame.K_w:
-                                user.character_y_pos = objecter.objecter_ypos - 64
+                                user.character_y_pos = objecter.objecter_ypos + user.character_height
 
             if pygame.sprite.collide_rect(user, doctor):
                     doctor_meat = 1
