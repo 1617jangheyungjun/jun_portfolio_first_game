@@ -133,6 +133,19 @@ class Toilet:
     def draw(self):      
         screen.blit(self.image, self.deskpos)
 
+class mental_icon:
+    def draw(self, image1, image2, image3, mental_level):
+        self.image1 = image1
+        self.image2 = image2
+        self.image3 = image3
+        self.mental_level = mental_level
+        if mental_level == 1:
+            screen.blit(self.image1, (1807, 64))
+        elif mental_level == 2:
+            screen.blit(self.image2, (1807, 64))
+        elif mental_level == 3:
+            screen.blit(self.image3, (1807, 64))
+
 #버튼 클래스 작성
 class Button:
     def __init__(self,event_list,image_in,x,y,width,height,image_act,x_act,y_act,click, action):
@@ -173,21 +186,25 @@ def Comu(map_lotate):
 #인게임
 def ingame():
     running = 1
-    doctor = Doctor()
     user = Player()
-    mentality = 0
     event_list = pygame.event.get()
     washstand = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\sameionda.png'))
     washstand_size = washstand.get_rect().size
     toilet = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\toilet.png'))
     toilet_size = toilet.get_rect().size
-    ingame_background = pygame.image.load("C:\\Users\plant\Desktop\\challinge\\git_programs\\bg_image\\hwajangsil.png")
+    ingame_background =  pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\hwajangsil.png'))
+    ingame_background2 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\hwajangsil1.png'))
+    ingame_background3 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\hwajangsil2.png'))
     washstand_object = Objecter(washstand,washstand_size ,87, 0, event_list)
     washstand2_object = Objecter(washstand,washstand_size ,275, 0, event_list)
     washstand3_object = Objecter(washstand,washstand_size ,462, 0, event_list)
     toilet_object = Objecter(toilet, toilet_size, 890, 0, event_list)
     toilet2_object = Objecter(toilet, toilet_size, 1149, 0, event_list)
     toilet3_object = Objecter(toilet, toilet_size, 1667, 0, event_list)
+    mental1_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\mental1.png'))
+    mental2_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\mental3.png'))
+    mental3_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\mental2.png'))
+    mental_level = 1
 # 게임구성
     while running:
         #게임 종료
@@ -197,7 +214,23 @@ def ingame():
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-        screen.blit(ingame_background, (0,0))
+
+                if event.key == pygame.K_UP:
+                    mental_level += 1
+                elif event.key == pygame.K_DOWN:
+                    mental_level -= 1
+        
+        if mental_level >= 3 or mental_level <= 0:
+            if mental_level >= 3:
+                mental_level = 3
+            elif mental_level <= 0:
+                mental_level = 1
+        if mental_level == 1:
+            screen.blit(ingame_background, (0,0))
+        elif mental_level == 2:
+            screen.blit(ingame_background2, (0, 0))
+        elif mental_level == 3:
+            screen.blit(ingame_background3, (0, 0))
         user.draw(event_list)
         washstand_object.draw()
         washstand2_object.draw()
@@ -205,14 +238,14 @@ def ingame():
         toilet_object.draw()
         toilet2_object.draw()
         toilet3_object.draw()
-
+        mental_icon().draw(mental1_image, mental2_image, mental3_image, mental_level)
         Toilet().draw()
         pygame.display.update()
         if pygame.sprite.collide_rect(user, Toilet()):
             print("만남")
 
-        # else:
-        #     print("안만남")
+        else:
+            print("안만남")
 
     
 #메인화면
@@ -236,6 +269,10 @@ def main(map_lotate):
     desk_objecter = Objecter(desk_image,desk_image_size, 1320, 340, event_list)
     flower_pot_objecter = Objecter(flower_pot,flower_pot_size, 5, 1013, event_list)
     flower_pot_objecter2 = Objecter(flower_pot,flower_pot_size, 5, 0, event_list)
+    mental1_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\mental1.png'))
+    mental2_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\mental3.png'))
+    mental3_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\mental2.png'))
+    mental_level = 1
     while running:
         #게임 종료
         event_list = pygame.event.get()
@@ -244,14 +281,27 @@ def main(map_lotate):
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-        if map_lotate == 0:
 
+                if event.key == pygame.K_UP:
+                    mental_level += 1
+                elif event.key == pygame.K_DOWN:
+                    mental_level -= 1
+        
+        if mental_level >= 3 or mental_level <= 0:
+            if mental_level >= 3:
+                mental_level = 3
+            elif mental_level <= 0:
+                mental_level = 1
+        if map_lotate == 0:
             screen.blit(background, (0,0))
             doctor.draw()
             user.draw(event_list)
             desk_objecter.draw()
             flower_pot_objecter.draw()
             flower_pot_objecter2.draw()
+            
+            mental_icon().draw(mental1_image, mental2_image, mental3_image, mental_level)
+
 
             for objecter in [desk_objecter, flower_pot_objecter, flower_pot_objecter2]:
                 if pygame.sprite.collide_rect(user, objecter):
