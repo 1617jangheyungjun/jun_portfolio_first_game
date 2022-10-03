@@ -4,20 +4,23 @@ import pygame,os,math,random,time,sys
 from pygame.locals import *
 #os 오류 해결용
 current_path1 = os.getcwd()
+
+current_path = os.path.dirname(__file__)
+image_path = os.path.join(current_path, 'images')
+
 #아이콘 그림 가져오기
-game_icon = pygame.image.load("icon\\icon.png")
+game_icon = pygame.image.load(os.path.join(current_path1 + "\\icon\\icon.png"))
 #배경 그림 가져오기
-background = pygame.image.load("bg_image\\test.png")
+background = pygame.image.load(os.path.join(current_path1 + "\\bg_image\\test.png"))
 
 pygame.init()
 fps = 60
 fpsClock = pygame.time.Clock()
 width, height = 1920, 1080
 screen = pygame.display.set_mode((width, height),pygame.FULLSCREEN)
-pygame.display.set_caption("** day dream **")
+pygame.display.set_caption("day dream")
 pygame.display.update()
-current_path = os.path.dirname(__file__)
-image_path = os.path.join(current_path, 'images')
+
 
 #주인공 클래스 작성
 class Player:
@@ -173,7 +176,7 @@ class Button:
                         if action == "Comu":
                             Comu(1)
                         elif action == "startmenu":
-                            main(0)
+                            start_text()
                         elif action == "quitmenu":
                             
                             pygame.quit()
@@ -182,8 +185,61 @@ class Button:
             screen.blit(image_in, (x,y))
 
 
-#버튼 이벤트 작성
 
+def start_text():
+    text_color = (255, 255, 255)
+    font1 = pygame.font.SysFont('hy목각파임b',30, True)
+    img1 = font1.render('2년전...',True,text_color)
+    img2 = font1.render('안녕하십니까! 신입사원 조준형 입니다! 잘부탁드립니다!',True,text_color)
+    img3 = font1.render('.',True,text_color)
+    img4 = font1.render('..',True,text_color)
+    img5 = font1.render('...',True,text_color)
+    img6 = font1.render('저.. 혹시 뭐부터 시작하면 될까요..?',True,text_color)
+    img7 = font1.render('HELLO WOLRD! 안녕하세요!',True,text_color)
+    img8 = font1.render('HELLO WOLRD! 안녕하세요!',True,text_color)
+    img9 = font1.render('HELLO WOLRD! 안녕하세요!',True,text_color)
+    img10 = font1.render('HELLO WOLRD! 안녕하세요!',True,text_color)
+    img11 = font1.render('HELLO WOLRD! 안녕하세요!',True,text_color)
+    img12 = font1.render('HELLO WOLRD! 안녕하세요!',True,text_color)
+    img13 = font1.render('HELLO WOLRD! 안녕하세요!',True,text_color)
+    community_box = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\comunity_company.png'))
+    text_index = 0
+    while True:
+        screen.blit(community_box, (0, 0))
+        event_list = pygame.event.get()
+        print(text_index)
+        #게임 종료
+        if text_index != 3 and text_index != 4:
+            for event in event_list:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
+            #대화 넘김
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame. K_RETURN:
+                        screen.blit(community_box, (0, 0))
+                        text_index += 1
+        if text_index == 1:
+            screen.blit(img1, (50, 850))
+        elif text_index == 2:
+            screen.blit(img2, (50, 850))
+        elif text_index == 3:
+            screen.blit(img3, (50, 850))
+            time.sleep(0.8)
+            text_index += 1
+        elif text_index == 4:
+            screen.blit(img4, (50, 850))
+            time.sleep(0.8)
+            text_index += 1
+        elif text_index == 5:
+            screen.blit(img5, (50, 850))
+            time.sleep(0.8)
+        elif text_index == 6:
+            screen.blit(img6, (50, 850))
+        
+        pygame.display.update()
+# 버튼 이벤트 작성
 
 def Comu(map_lotate):
     community_box = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\comunity.png'))
@@ -258,7 +314,7 @@ def bathroom():
 
     map_locate = "in"
 
-    #오브젝트 생성 정신도 따른 세변대
+    #오브젝트 생성 정신도 따른 세면대
     washstand11_object = Objecter(washstand1,washstand1_size ,87, 0, event_list)
     washstand12_object = Objecter(washstand1,washstand1_size ,275, 0, event_list)
     washstand13_object = Objecter(washstand1,washstand1_size ,462, 0, event_list)
@@ -413,7 +469,12 @@ def main(map_lotate):
 def main_menu():
     bgimage = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\main_menu.png'))
 
-
+    white_text_color = (255, 255, 255)
+    black_text_color = (0, 0, 0)
+    font1 = pygame.font.SysFont('휴먼명조',60, False)
+    gametext = font1.render('게임',True,black_text_color)
+    starttext = font1.render('시작',True,white_text_color)
+    quittext = font1.render("종료", True, white_text_color)
     click_gamestart = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\game start_button.png'))
     click_start_button_size = click_gamestart.get_rect().size
     click_start_width = click_start_button_size[0]
@@ -433,5 +494,9 @@ def main_menu():
         screen.blit(bgimage, (0, 0))
         start_image = Button(event_list, click_gamestart,753, 413, click_start_width, click_start_height, click_gamestart_uppoint,753, 413, click_gamestart_uppoint, "startmenu")
         quit_image = Button(event_list, click_gamequit,753, 597, click_quit_width, click_quit_height, click_gamequit_uppoint,753, 597, click_gamequit_uppoint, "quitmenu")
+        screen.blit(gametext, (840, 420))
+        screen.blit(starttext, (960, 420))
+        screen.blit(quittext, (960, 605))
+        screen.blit(gametext, (840, 605))
         pygame.display.update()
 main_menu()
