@@ -1,3 +1,4 @@
+from importlib.resources import path
 from tkinter import Y
 import pygame,os,math,random,time,sys
 from pygame.locals import *
@@ -40,15 +41,14 @@ class Player:
         self.rect.centery = self.character_y_pos
         self.mentality = 0      #주인공 정신도 수준
         self.forin = 0
-    def draw(self, event_list):
-        dt = self.clock.tick(60)
+    def draw(self, event_list, map_locate):
         self.rect = pygame.Rect(self.image.get_rect())  
         self.rect.centerx = self.character_x_pos
         self.rect.centery = self.character_y_pos
-        # 수정1 : 기존의 character_to_x 를 왼쪽 방향, 오른쪽 방향 변수 2개로 나눔
+        
         for event in event_list:
 
-            # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
                     self.character_to_x_LEFT -= 0.4 # 바뀐 부분
@@ -60,7 +60,7 @@ class Player:
                 elif event.key == pygame.K_w:
                     self.character_to_y_down -= 0.4 # 바뀐 부분
 
-            # 수정3 : 키에서 손을 뗄 때 LEFT, RIGHT 를 각각 처리
+
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a: # 이 부분은 모두 다 바뀜
                     self.character_to_x_LEFT = 0
@@ -71,28 +71,38 @@ class Player:
                 elif event.key == pygame.K_w:
                     self.character_to_y_down = 0
   
-
+        dt = self.clock.tick(60)
         # 수정4 : 두 변수의 값을 모두 더함
         self.character_x_pos += self.character_to_x_LEFT * dt + self.character_to_x_RIGHT * dt
         self.character_y_pos += self.character_to_y_up * dt + self.character_to_y_down * dt
         screen.blit(self.image, (self.character_x_pos, self.character_y_pos))
+        if map_locate == 'in':
+            if self.character_x_pos < 0:
+                self.character_x_pos = 0
+            elif self.character_x_pos > width - self.character_width:
+                self.character_x_pos = width - self.character_width
 
-        if self.character_x_pos < 0:
-            self.character_x_pos = 0
-        elif self.character_x_pos > width - self.character_width:
-            self.character_x_pos = width - self.character_width
+            if self.character_y_pos < 0:
+                self.character_y_pos = 0
+            elif self.character_y_pos > height - self.character_height:
+                self.character_y_pos = height - self.character_height
+        elif map_locate == 'main':
+            if self.character_x_pos < 0:
+                self.character_x_pos = 0
+            elif self.character_x_pos > 1251:
+                self.character_x_pos = 1251
 
-        if self.character_y_pos < 0:
-            self.character_y_pos = 0
-        elif self.character_y_pos > height - self.character_height:
-            self.character_y_pos = height - self.character_height
 
+            if self.character_y_pos < 0:
+                self.character_y_pos = 0
+            elif self.character_y_pos > height - self.character_height:
+                self.character_y_pos = height - self.character_height
 
 #의사 클래스 작성
 class Doctor:
-    doctorpos = [1600, height / 2] #의사 초기 위치
+    doctorpos = [1600, height / 2] 
     def __init__(self):
-        self.image = pygame.image.load(os.path.join(image_path,current_path1 + '\\character_image\\sub_dummy.png')) #의사의 이미지를 불러옴
+        self.image = pygame.image.load(os.path.join(image_path,current_path1 + '\\character_image\\sub_dummy.png')) 
         self.doctor_size = self.image.get_rect().size
         self.doctor_width = self.doctor_size[0]
         self.doctor_height = self.doctor_size[1]
@@ -101,7 +111,22 @@ class Doctor:
         self.rect.centerx = self.doctorpos[0]
         self.rect.centery = self.doctorpos[1]
     def draw(self):      
-        screen.blit(self.image, self.doctorpos)      #의사를 초기위치에 그림
+        screen.blit(self.image, self.doctorpos)      
+
+#의자 클래스 작성
+class Chair:
+    chairpos = [1180, height / 2] 
+    def __init__(self):
+        self.image = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\chair.png')) 
+        self.chair_size = self.image.get_rect().size
+        self.chair_width = self.chair_size[0]
+        self.chair_height = self.chair_size[1]
+        self.image = pygame.transform.scale(self.image, (self.chair_width, self.chair_height))
+        self.rect = pygame.Rect(self.image.get_rect())  
+        self.rect.centerx = self.chairpos[0]
+        self.rect.centery = self.chairpos[1]
+    def draw(self):      
+        screen.blit(self.image, self.chairpos) 
 
 #오브젝트클래스 작성
 class Objecter:
@@ -119,25 +144,13 @@ class Objecter:
     def draw(self):
         screen.blit(self.image,(self.objecter_xpos, self.objecter_ypos))
 
-class Toilet:
-    deskpos = [1408, 0] #책상 초기 위치
-    def __init__(self):
-        self.image = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\toilet.png')) #의사의 이미지를 불러옴
-        self.desk_size = self.image.get_rect().size
-        self.desk_width = self.desk_size[0]
-        self.desk_height = self.desk_size[1]
-        self.image = pygame.transform.scale(self.image, (self.desk_width, self.desk_height))
-        self.rect = pygame.Rect(self.image.get_rect())  
-        self.rect.centerx = self.deskpos[0]
-        self.rect.centery = self.deskpos[1]+20
-    def draw(self):      
-        screen.blit(self.image, self.deskpos)
 
 class mental_icon:
-    def draw(self, image1, image2, image3, mental_level):
-        self.image1 = image1
-        self.image2 = image2
-        self.image3 = image3
+    def __init__(self):
+        self.image1 = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\mental1.png'))
+        self.image2 = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\mental3.png'))
+        self.image3 = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\mental2.png'))
+    def draw(self, mental_level):
         self.mental_level = mental_level
         if mental_level == 1:
             screen.blit(self.image1, (1807, 64))
@@ -159,9 +172,18 @@ class Button:
                         time.sleep(0.2)
                         if action == "Comu":
                             Comu(1)
+                        elif action == "startmenu":
+                            main(0)
+                        elif action == "quitmenu":
+                            
+                            pygame.quit()
+                            sys.exit()
         else:
             screen.blit(image_in, (x,y))
+
+
 #버튼 이벤트 작성
+
 
 def Comu(map_lotate):
     community_box = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\comunity.png'))
@@ -179,31 +201,90 @@ def Comu(map_lotate):
         #대화 넘김
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame. K_RETURN:
-                    ingame()
+                    bathroom()
         pygame.display.update()
-
+class music():
+    def sound_play(self, music_path, music_volum):
+        pygame.mixer.music.load(os.path.join(image_path,current_path1 + music_path))
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(music_volum)
         
-#인게임
-def ingame():
+#화장실맵
+def bathroom():
     running = 1
     user = Player()
     event_list = pygame.event.get()
-    washstand = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\sameionda.png'))
-    washstand_size = washstand.get_rect().size
-    toilet = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\toilet.png'))
-    toilet_size = toilet.get_rect().size
+    washstand1 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\sameionda.png'))
+    washstand1_size = washstand1.get_rect().size
+    washstand21 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\sameionda2.png'))
+    washstand21_size = washstand1.get_rect().size
+    washstand22 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\sameionda2-1.png'))
+    washstand22_size = washstand1.get_rect().size
+    washstand23 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\sameionda2-2.png'))
+    washstand23_size = washstand1.get_rect().size
+    washstand31 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\sameionda3.png'))
+    washstand31_size = washstand1.get_rect().size
+    washstand32 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\sameionda3-1.png'))
+    washstand32_size = washstand1.get_rect().size
+    washstand33 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\sameionda3-2.png'))
+    washstand33_size = washstand1.get_rect().size
+
+
+    toilet1 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\toilet.png'))
+    toilet1_size = toilet1.get_rect().size
+    toilet21 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\toilet1-1.png'))
+    toilet21_size = toilet1.get_rect().size
+    toilet22 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\toilet1-2.png'))
+    toilet22_size = toilet1.get_rect().size
+    toilet23 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\toilet1-3.png'))
+    toilet23_size = toilet1.get_rect().size
+    toilet24 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\toilet1-4.png'))
+    toilet24_size = toilet1.get_rect().size
+    toilet31 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\toilet2-1.png'))
+    toilet31_size = toilet1.get_rect().size
+    toilet32 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\toilet2-2.png'))
+    toilet32_size = toilet1.get_rect().size
+    toilet33 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\toilet2-3.png'))
+    toilet33_size = toilet1.get_rect().size
+    toilet34 = pygame.image.load(os.path.join(image_path,current_path1 + '\\object\\toilet2-4.png'))
+    toilet34_size = toilet1.get_rect().size
+
+
+
     ingame_background =  pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\hwajangsil.png'))
     ingame_background2 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\hwajangsil1.png'))
     ingame_background3 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\hwajangsil2.png'))
-    washstand_object = Objecter(washstand,washstand_size ,87, 0, event_list)
-    washstand2_object = Objecter(washstand,washstand_size ,275, 0, event_list)
-    washstand3_object = Objecter(washstand,washstand_size ,462, 0, event_list)
-    toilet_object = Objecter(toilet, toilet_size, 890, 0, event_list)
-    toilet2_object = Objecter(toilet, toilet_size, 1149, 0, event_list)
-    toilet3_object = Objecter(toilet, toilet_size, 1667, 0, event_list)
-    mental1_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\mental1.png'))
-    mental2_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\mental3.png'))
-    mental3_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\mental2.png'))
+
+
+    map_locate = "in"
+
+    #오브젝트 생성 정신도 따른 세변대
+    washstand11_object = Objecter(washstand1,washstand1_size ,87, 0, event_list)
+    washstand12_object = Objecter(washstand1,washstand1_size ,275, 0, event_list)
+    washstand13_object = Objecter(washstand1,washstand1_size ,462, 0, event_list)
+    washstand21_object = Objecter(washstand21,washstand21_size ,87, 0, event_list)
+    washstand22_object = Objecter(washstand22,washstand22_size ,275, 0, event_list)
+    washstand23_object = Objecter(washstand23,washstand23_size ,462, 0, event_list)
+    washstand31_object = Objecter(washstand31,washstand31_size ,87, 0, event_list)
+    washstand32_object = Objecter(washstand32,washstand32_size ,275, 0, event_list)
+    washstand33_object = Objecter(washstand33,washstand33_size ,462, 0, event_list)
+
+
+    #오브젝트 생성 정신도 따른 변기칸
+    toilet11_object = Objecter(toilet1, toilet1_size, 912, 0, event_list)
+    toilet12_object = Objecter(toilet1, toilet1_size, 1164, 0, event_list)
+    toilet13_object = Objecter(toilet1, toilet1_size, 1416, 0, event_list)
+    toilet14_object = Objecter(toilet1, toilet1_size, 1668, 0, event_list)
+    toilet21_object = Objecter(toilet21, toilet21_size, 912, 0, event_list)
+    toilet22_object = Objecter(toilet22, toilet22_size, 1164, 0, event_list)
+    toilet23_object = Objecter(toilet23, toilet23_size, 1416, 0, event_list)
+    toilet24_object = Objecter(toilet24, toilet24_size, 1668, 0, event_list)
+    toilet31_object = Objecter(toilet31, toilet31_size, 912, 0, event_list)
+    toilet32_object = Objecter(toilet32, toilet32_size, 1164, 0, event_list)
+    toilet33_object = Objecter(toilet33, toilet33_size, 1416, 0, event_list)
+    toilet34_object = Objecter(toilet34, toilet34_size, 1668, 0, event_list)
+
+    
     mental_level = 1
 # 게임구성
     while running:
@@ -227,34 +308,48 @@ def ingame():
                 mental_level = 1
         if mental_level == 1:
             screen.blit(ingame_background, (0,0))
+            washstand11_object.draw()
+            washstand12_object.draw()
+            washstand13_object.draw()
+            toilet11_object.draw()
+            toilet12_object.draw()
+            toilet13_object.draw()
+            toilet14_object.draw()
         elif mental_level == 2:
             screen.blit(ingame_background2, (0, 0))
+            washstand21_object.draw()
+            washstand22_object.draw()
+            washstand23_object.draw()
+            toilet21_object.draw()
+            toilet22_object.draw()
+            toilet23_object.draw()
+            toilet24_object.draw()
         elif mental_level == 3:
             screen.blit(ingame_background3, (0, 0))
-        user.draw(event_list)
-        washstand_object.draw()
-        washstand2_object.draw()
-        washstand3_object.draw()
-        toilet_object.draw()
-        toilet2_object.draw()
-        toilet3_object.draw()
-        mental_icon().draw(mental1_image, mental2_image, mental3_image, mental_level)
-        Toilet().draw()
-        pygame.display.update()
-        if pygame.sprite.collide_rect(user, Toilet()):
-            print("만남")
+            washstand31_object.draw()
+            washstand32_object.draw()
+            washstand33_object.draw()
+            toilet31_object.draw()
+            toilet32_object.draw()
+            toilet33_object.draw()
+            toilet34_object.draw()
+        user.draw(event_list, map_locate)
 
-        else:
-            print("안만남")
+        mental_icon().draw(mental_level)
+        pygame.display.update()
 
     
 #메인화면
         
 def main(map_lotate):
+    
+
+
     event_list = pygame.event.get()
     running = 1
     doctor = Doctor()
     user = Player()
+    chair = Chair()
     doctor_meat = 0
     comu_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\community_box.png'))
     comu_button_size = comu_image.get_rect().size
@@ -269,9 +364,7 @@ def main(map_lotate):
     desk_objecter = Objecter(desk_image,desk_image_size, 1320, 340, event_list)
     flower_pot_objecter = Objecter(flower_pot,flower_pot_size, 5, 1013, event_list)
     flower_pot_objecter2 = Objecter(flower_pot,flower_pot_size, 5, 0, event_list)
-    mental1_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\mental1.png'))
-    mental2_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\mental3.png'))
-    mental3_image = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\mental2.png'))
+    map_locate = 'main'
     mental_level = 1
     while running:
         #게임 종료
@@ -295,30 +388,17 @@ def main(map_lotate):
         if map_lotate == 0:
             screen.blit(background, (0,0))
             doctor.draw()
-            user.draw(event_list)
+            chair.draw()
+            user.draw(event_list, map_locate)
             desk_objecter.draw()
             flower_pot_objecter.draw()
             flower_pot_objecter2.draw()
             
-            mental_icon().draw(mental1_image, mental2_image, mental3_image, mental_level)
+            mental_icon().draw(mental_level)
 
 
-            for objecter in [desk_objecter, flower_pot_objecter, flower_pot_objecter2]:
-                if pygame.sprite.collide_rect(user, objecter):
-                    for event in event_list:
-                        # 수정2 : 키를 누를 때 LEFT, RIGHT 에 따라 서로 다른 변수의 값 조정
-                        if event.type == pygame.KEYDOWN:
-                            if event.key == pygame.K_a:
-                                user.character_x_pos = objecter.objecter_xpos + user.character_width # 바뀐 부분
-                            elif event.key == pygame.K_d:
-                                user.character_x_pos = objecter.objecter_xpos - user.character_width # 바뀐 부분
-
-                            elif event.key == pygame.K_s:
-                                user.character_y_pos = objecter.objecter_ypos - user.character_height # 바뀐 부분
-                            elif event.key == pygame.K_w:
-                                user.character_y_pos = objecter.objecter_ypos + user.character_height
-
-            if pygame.sprite.collide_rect(user, doctor):
+            
+            if pygame.sprite.collide_rect(user, chair):
                     doctor_meat = 1
             else:
                 doctor_meat = 0
@@ -328,7 +408,30 @@ def main(map_lotate):
 
         pygame.display.update()
                 
-main(0) 
+ 
+
+def main_menu():
+    bgimage = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\main_menu.png'))
 
 
-        
+    click_gamestart = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\game start_button.png'))
+    click_start_button_size = click_gamestart.get_rect().size
+    click_start_width = click_start_button_size[0]
+    click_start_height = click_start_button_size[1]
+    click_gamestart_uppoint = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\game start_button_uppoint.png'))
+    
+    click_gamequit = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\game quit_button.png'))
+    click_gamequit_size = click_gamequit.get_rect().size
+    click_quit_width = click_gamequit_size[0]
+    click_quit_height = click_gamequit_size[1]
+    click_gamequit_uppoint = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\game quit_button_uppoint.png'))
+    pygame.mixer.music.load(os.path.join(image_path,current_path1 + '\\BGM\\main_bgm.mp3'))
+    pygame.mixer.music.play()
+    pygame.mixer.music.set_volume(0.14)
+    while True:
+        event_list = pygame.event.get()
+        screen.blit(bgimage, (0, 0))
+        start_image = Button(event_list, click_gamestart,753, 413, click_start_width, click_start_height, click_gamestart_uppoint,753, 413, click_gamestart_uppoint, "startmenu")
+        quit_image = Button(event_list, click_gamequit,753, 597, click_quit_width, click_quit_height, click_gamequit_uppoint,753, 597, click_gamequit_uppoint, "quitmenu")
+        pygame.display.update()
+main_menu()
