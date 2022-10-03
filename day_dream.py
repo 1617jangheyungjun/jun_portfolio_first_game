@@ -237,6 +237,8 @@ def start_text():
             time.sleep(0.8)
         elif text_index == 6:
             screen.blit(img6, (50, 850))
+        elif text_index == 7:
+            main(0)
         
         pygame.display.update()
 # 버튼 이벤트 작성
