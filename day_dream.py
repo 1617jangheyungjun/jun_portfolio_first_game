@@ -33,8 +33,22 @@ class Player:
     character_to_y_down = 0
     width, height = 1920, 1080
     clock = pygame.time.Clock()
+    right_walk = [pygame.image.load(os.path.join(current_path1 + '\\character_image\\main_character_right_move.png')),
+    pygame.image.load(os.path.join(current_path1 + '\\character_image\\main_character_right_move2.png')),
+    pygame.image.load(os.path.join(current_path1 + '\\character_image\\main_character_right_move3.png')),
+    pygame.image.load(os.path.join(current_path1 + '\\character_image\\main_character_right_move4.png'))]
+
+    left_walk = [pygame.image.load(os.path.join(current_path1 + '\\character_image\\main_character_left_move1.png')),
+    pygame.image.load(os.path.join(current_path1 + '\\character_image\\main_character_left_move2.png')),
+    pygame.image.load(os.path.join(current_path1 + '\\character_image\\main_character_left_move3.png')),
+    pygame.image.load(os.path.join(current_path1 + '\\character_image\\main_character_left_move4.png'))]
+    player_left = False
+    player_right = False
+    walkcount = 0
+    current_time = 0
+    mt = clock.tick(60) / 1000
     def __init__(self):
-        self.image = pygame.image.load(os.path.join(current_path1 + '\\character_image\\dummy.png')) #주인공 그림을 받아옴
+        self.image = pygame.image.load(os.path.join(current_path1 + '\\character_image\\main_character.png')) #주인공 그림을 받아옴
         self.character_size = self.image.get_rect().size
         self.character_width = self.character_size[0]
         self.character_height = self.character_size[1]
@@ -44,41 +58,65 @@ class Player:
         self.rect.centery = self.character_y_pos
         self.mentality = 0      #주인공 정신도 수준
         self.forin = 0
+        self.animation_time = 100/(4.9 * 100)
+
+    
     def draw(self, event_list, map_locate):
         self.rect = pygame.Rect(self.image.get_rect())  
         self.rect.centerx = self.character_x_pos
         self.rect.centery = self.character_y_pos
-        
+        self.current_time += self.mt
+        print(self.current_time, self.animation_time)
         for event in event_list:
 
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
                     self.character_to_x_LEFT -= 0.4 # 바뀐 부분
+                    self.player_left = True
                 elif event.key == pygame.K_d:
                     self.character_to_x_RIGHT += 0.4 # 바뀐 부분
-
+                    self.player_right = True
+                    
                 elif event.key == pygame.K_s:
                     self.character_to_y_up += 0.4 # 바뀐 부분
                 elif event.key == pygame.K_w:
                     self.character_to_y_down -= 0.4 # 바뀐 부분
 
 
+
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a: # 이 부분은 모두 다 바뀜
                     self.character_to_x_LEFT = 0
+                    self.player_left = False
                 elif event.key == pygame.K_d:
                     self.character_to_x_RIGHT = 0
+                    self.player_right = False
                 elif event.key == pygame.K_s:
                     self.character_to_y_up = 0
                 elif event.key == pygame.K_w:
                     self.character_to_y_down = 0
-  
+        if self.player_right == True:
+            if self.current_time > self.animation_time:
+                self.walkcount += 1
+                self.current_time = 0
+            if self.walkcount > 3:
+                self.walkcount = 0
+            screen.blit(self.right_walk[self.walkcount], (self.character_x_pos, self.character_y_pos))
+        elif self.player_left == True:
+            if self.current_time > self.animation_time:
+                self.walkcount += 1
+                self.current_time = 0
+            if self.walkcount > 3:
+                self.walkcount = 0
+            screen.blit(self.left_walk[self.walkcount], (self.character_x_pos, self.character_y_pos))
+        else:
+            screen.blit(self.image, (self.character_x_pos, self.character_y_pos))
+
         dt = self.clock.tick(60)
         # 수정4 : 두 변수의 값을 모두 더함
         self.character_x_pos += self.character_to_x_LEFT * dt + self.character_to_x_RIGHT * dt
         self.character_y_pos += self.character_to_y_up * dt + self.character_to_y_down * dt
-        screen.blit(self.image, (self.character_x_pos, self.character_y_pos))
         if map_locate == 'in':
             if self.character_x_pos < 0:
                 self.character_x_pos = 0
@@ -105,7 +143,7 @@ class Player:
 class Doctor:
     doctorpos = [1600, height / 2] 
     def __init__(self):
-        self.image = pygame.image.load(os.path.join(image_path,current_path1 + '\\character_image\\sub_dummy.png')) 
+        self.image = pygame.image.load(os.path.join(image_path,current_path1 + '\\character_image\\doctor.png')) 
         self.doctor_size = self.image.get_rect().size
         self.doctor_width = self.doctor_size[0]
         self.doctor_height = self.doctor_size[1]
@@ -202,18 +240,19 @@ def start_text():
     img8 = font1.render('죄송합니다...',True,text_color)
     img9 = font1.render('신입이면 신입답게 춤한번 춰봐',True,upper_color)
     img10 = font1.render('네..? 춤을요..?',True,text_color)
-    img11 = font1.render('몇',True,text_color)
-    img12 = font1.render('몇일',True,text_color)
-    img13 = font1.render('몇일뒤',True,text_color)
+    img11 = font1.render('며',True,text_color)
+    img12 = font1.render('며칠',True,text_color)
+    img13 = font1.render('며칠뒤',True,text_color)
     img14 = font1.render('엄마~ 응 거기로 갈게',True,text_color)
     img15 = font1.render('엄마...',True,text_color)
     img16 = font1.render('엄마... 안돼!!!',True,text_color)
     community_box = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\comunity_company.png'))
     text_index = 0
+
+    upindex = 1
     while True:
         screen.blit(community_box, (0, 0))
         event_list = pygame.event.get()
-        print(text_index)
         #게임 종료
         if text_index != 3 and text_index != 4:
             for event in event_list:
@@ -223,7 +262,7 @@ def start_text():
                         sys.exit()
             #대화 넘김
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame. K_RETURN:
+                    if event.key == pygame. K_RETURN and upindex == 1:
                         screen.blit(community_box, (0, 0))
                         text_index += 1
         if text_index == 1:
@@ -233,6 +272,7 @@ def start_text():
         elif text_index == 3:
             screen.blit(img3, (50, 850))
             pygame.mixer.Sound.play(paper)
+            upindex = 0
             time.sleep(0.8)
             text_index += 1
         elif text_index == 4:
@@ -242,6 +282,7 @@ def start_text():
         elif text_index == 5:
             screen.blit(img5, (50, 850))
             time.sleep(0.8)
+            upindex = 1
         elif text_index == 6:
             screen.blit(img6, (50, 850))
         elif text_index == 7:
@@ -256,6 +297,7 @@ def start_text():
             screen.blit(img11, (50, 850))
         elif text_index == 11:
             screen.blit(img11, (50, 850))
+            upindex = 0
             time.sleep(0.8)
             text_index += 1
         elif text_index == 12:
@@ -265,6 +307,7 @@ def start_text():
         elif text_index == 13:
             screen.blit(img13, (50, 850))
             time.sleep(0.8)
+            upindex = 1
         elif text_index == 14:
             screen.blit(img14, (50, 850))
         elif text_index == 15:
