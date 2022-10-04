@@ -1,4 +1,5 @@
 from importlib.resources import path
+from re import L
 from tkinter import Y
 import pygame,os,math,random,time,sys
 from pygame.locals import *
@@ -345,12 +346,22 @@ def Comu(map_lotate):
                 if event.key == pygame. K_RETURN:
                     bathroom()
         pygame.display.update()
-class music():
-    def sound_play(self, music_path, music_volum):
-        pygame.mixer.music.load(os.path.join(image_path,current_path1 + music_path))
-        pygame.mixer.music.play(-1)
-        pygame.mixer.music.set_volume(music_volum)
-        
+
+def class1():
+    running = 1
+    user = Player()
+    event_list = pygame.event.get()
+    map_locate = "in"
+    # 게임구성
+    while running:
+        #게임 종료
+        event_list = pygame.event.get()
+        for event in event_list:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+
 #화장실맵
 def bathroom():
     running = 1
@@ -426,8 +437,17 @@ def bathroom():
     toilet33_object = Objecter(toilet33, toilet33_size, 1416, 0, event_list)
     toilet34_object = Objecter(toilet34, toilet34_size, 1668, 0, event_list)
 
-    
+    surprise = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\surprise.png'))
+    pygame.mixer.music.load(os.path.join(image_path,current_path1 + '\\BGM\\Kindergarden - Coyote Hearing.mp3'))
+    pygame.mixer.music.play()
+    pygame.mixer.music.set_volume(0.3)
     mental_level = 1
+    breath = pygame.mixer.Sound(os.path.join(image_path,current_path1 + '\\BGM\\Breathing Echo space.mp3'))
+    crush = pygame.mixer.Sound(os.path.join(image_path,current_path1 + '\\BGM\\Monster Alien Roar Aggressive.mp3'))
+    font1 = pygame.font.SysFont('휴먼명조',60, False)
+    push = font1.render('줍기',True,(0, 0, 0))
+    pushevent = False
+    crash = 0
 # 게임구성
     while running:
         #게임 종료
@@ -437,6 +457,9 @@ def bathroom():
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
+                if event.key == pygame. K_RETURN and user.character_x_pos > 275 and user.character_x_pos < 462 and user.character_y_pos < 121:
+                    crash = 1
+                
 
                 if event.key == pygame.K_UP:
                     mental_level += 1
@@ -475,7 +498,17 @@ def bathroom():
             toilet32_object.draw()
             toilet33_object.draw()
             toilet34_object.draw()
+            if user.character_x_pos > 275 and user.character_x_pos < 462 and user.character_y_pos < 121:
+                pygame.mixer.Sound.play(breath)
+                screen.blit(push, (10, 10))
+                if crash == 1:
+                    pygame.mixer.Sound.play(crush)
+                    screen.blit(surprise, (0, 0))
+                    
+            else:
+                pygame.mixer.Sound.stop(breath)
         user.draw(event_list, map_locate)
+
 
         mental_icon().draw(mental_level)
         pygame.display.update()
