@@ -188,20 +188,26 @@ class Button:
 
 def start_text():
     text_color = (255, 255, 255)
+    upper_color = (255, 0 , 0)
+    paper = pygame.mixer.Sound(os.path.join(image_path,current_path1 + '\\BGM\\Paper_2.7.mp3'))
+    caraccident = pygame.mixer.Sound(os.path.join(image_path,current_path1 + '\\BGM\\car.mp3'))
     font1 = pygame.font.SysFont('hy목각파임b',30, True)
     img1 = font1.render('2년전...',True,text_color)
-    img2 = font1.render('안녕하십니까! 신입사원 조준형 입니다! 잘부탁드립니다!',True,text_color)
-    img3 = font1.render('.',True,text_color)
-    img4 = font1.render('..',True,text_color)
-    img5 = font1.render('...',True,text_color)
+    img2 = font1.render('안녕하십니까! 신입사원 000 입니다! 잘부탁드립니다!',True,text_color)
+    img3 = font1.render('.',True,upper_color)
+    img4 = font1.render('..',True,upper_color)
+    img5 = font1.render('...',True,upper_color)
     img6 = font1.render('저.. 혹시 뭐부터 시작하면 될까요..?',True,text_color)
-    img7 = font1.render('HELLO WOLRD! 안녕하세요!',True,text_color)
-    img8 = font1.render('HELLO WOLRD! 안녕하세요!',True,text_color)
-    img9 = font1.render('HELLO WOLRD! 안녕하세요!',True,text_color)
-    img10 = font1.render('HELLO WOLRD! 안녕하세요!',True,text_color)
-    img11 = font1.render('HELLO WOLRD! 안녕하세요!',True,text_color)
-    img12 = font1.render('HELLO WOLRD! 안녕하세요!',True,text_color)
-    img13 = font1.render('HELLO WOLRD! 안녕하세요!',True,text_color)
+    img7 = font1.render('가만히있어',True,upper_color)
+    img8 = font1.render('죄송합니다...',True,text_color)
+    img9 = font1.render('신입이면 신입답게 춤한번 춰봐',True,upper_color)
+    img10 = font1.render('네..? 춤을요..?',True,text_color)
+    img11 = font1.render('몇',True,text_color)
+    img12 = font1.render('몇일',True,text_color)
+    img13 = font1.render('몇일뒤',True,text_color)
+    img14 = font1.render('엄마~ 응 거기로 갈게',True,text_color)
+    img15 = font1.render('엄마...',True,text_color)
+    img16 = font1.render('엄마... 안돼!!!',True,text_color)
     community_box = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\comunity_company.png'))
     text_index = 0
     while True:
@@ -226,6 +232,7 @@ def start_text():
             screen.blit(img2, (50, 850))
         elif text_index == 3:
             screen.blit(img3, (50, 850))
+            pygame.mixer.Sound.play(paper)
             time.sleep(0.8)
             text_index += 1
         elif text_index == 4:
@@ -238,7 +245,41 @@ def start_text():
         elif text_index == 6:
             screen.blit(img6, (50, 850))
         elif text_index == 7:
+            screen.blit(img7, (50, 850))
+        elif text_index == 8:
+            screen.blit(img8, (50, 850))
+        elif text_index == 9:
+            screen.blit(img9, (50, 850))
+        elif text_index == 10:
+            screen.blit(img10, (50, 850))
+        elif text_index == 7:
+            screen.blit(img11, (50, 850))
+        elif text_index == 11:
+            screen.blit(img11, (50, 850))
+            time.sleep(0.8)
+            text_index += 1
+        elif text_index == 12:
+            screen.blit(img12, (50, 850))
+            time.sleep(0.8)
+            text_index += 1
+        elif text_index == 13:
+            screen.blit(img13, (50, 850))
+            time.sleep(0.8)
+        elif text_index == 14:
+            screen.blit(img14, (50, 850))
+        elif text_index == 15:
+            screen.blit(img15, (50, 850))
+        elif text_index == 16:
+            screen.blit(img16, (50, 850))
+            pygame.mixer.Sound.play(caraccident)
+            text_index += 1
+        elif text_index == 17:
+            screen.blit(img16, (50, 850))
+        elif text_index == 18:
             main(0)
+        
+        
+        
         
         pygame.display.update()
 # 버튼 이벤트 작성
@@ -490,7 +531,7 @@ def main_menu():
     click_gamequit_uppoint = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\game quit_button_uppoint.png'))
     pygame.mixer.music.load(os.path.join(image_path,current_path1 + '\\BGM\\main_bgm.mp3'))
     pygame.mixer.music.play()
-    pygame.mixer.music.set_volume(0.14)
+    pygame.mixer.music.set_volume(0.1)
     while True:
         event_list = pygame.event.get()
         screen.blit(bgimage, (0, 0))
