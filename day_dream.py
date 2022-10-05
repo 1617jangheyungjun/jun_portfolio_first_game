@@ -3,6 +3,7 @@ from re import L
 from tkinter import Y
 import pygame,os,math,random,time,sys
 from pygame.locals import *
+import random
 #os 오류 해결용
 current_path1 = os.getcwd()
 
@@ -22,6 +23,25 @@ screen = pygame.display.set_mode((width, height),pygame.FULLSCREEN)
 pygame.display.set_caption("day dream")
 pygame.display.set_icon(game_icon)
 pygame.display.update()
+
+
+#랜덤하게 의사의 말 출력
+class mic:
+    talk = pygame.mixer.Sound(os.path.join(image_path,current_path1 + '\\BGM\\Beep Short .mp3'))
+    font1 = pygame.font.SysFont('hy목각파임b',30, True)
+    img1 = font1.render('나한테 왜그랬어!',True,(255,100,0))
+    img2 = font1.render('난 너가 달라질수 있다고 믿어.',True,(255,100,0))
+    def play(self):
+        a = random.randrange(1, 5)
+        if a == 2:
+            pygame.mixer.Sound.play(self.talk)
+            screen.blit(self.img1, (10, 10))
+
+        if a == 3:
+            pygame.mixer.Sound.play(self.talk)
+            screen.blit(self.img2, (10, 10))
+
+
 
 
 #주인공 클래스 작성
@@ -355,6 +375,8 @@ def start_text():
 def Comu(map_lotate):
     community_box = pygame.image.load(os.path.join(image_path,current_path1 + '\\interface\\comunity.png'))
     end23 = False
+    font3 = pygame.font.SysFont('hy목각파임b',30, True)
+    img1 = font3.render('무슨일로 오셨죠?',True,(255, 255, 255))
     while map_lotate == 1:
         screen.blit(community_box, (0, 0))
         event_list = pygame.event.get()
@@ -369,7 +391,10 @@ def Comu(map_lotate):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame. K_RETURN:
                     bathroom()
+        
+        screen.blit(img1, (50, 850))
         pygame.display.update()
+        
 
 
 #화장실맵
@@ -571,8 +596,8 @@ def classroom():
 
 def gol():
     gol1 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\goalmock.png'))
-    gol2 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\glola_al2l.png'))
-    gol3 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\glola_al1l.png'))
+    gol3 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\glola_al2l.png'))
+    gol2 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\glola_al1l.png'))
     running = 1
     user = Player()
 
