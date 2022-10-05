@@ -550,6 +550,8 @@ def classroom():
                     mental_level += 1
                 elif event.key == pygame.K_DOWN:
                     mental_level -= 1
+                elif event.key == pygame.K_RIGHT:
+                    gol()
         if mental_level >= 3 or mental_level <= 0:
             if mental_level >= 3:
                 mental_level = 3
@@ -567,7 +569,7 @@ def classroom():
         mental_icon().draw(mental_level)
         pygame.display.update()
 
-def classroom():
+def gol():
     gol1 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\goalmock.png'))
     gol2 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\glola_al2l.png'))
     gol3 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\glola_al1l.png'))
