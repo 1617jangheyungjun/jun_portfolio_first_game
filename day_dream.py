@@ -20,6 +20,7 @@ fpsClock = pygame.time.Clock()
 width, height = 1920, 1080
 screen = pygame.display.set_mode((width, height),pygame.FULLSCREEN)
 pygame.display.set_caption("day dream")
+pygame.display.set_icon(game_icon)
 pygame.display.update()
 
 
@@ -118,6 +119,29 @@ class Player:
         # 수정4 : 두 변수의 값을 모두 더함
         self.character_x_pos += self.character_to_x_LEFT * dt + self.character_to_x_RIGHT * dt
         self.character_y_pos += self.character_to_y_up * dt + self.character_to_y_down * dt
+        if map_locate == 'class':
+            if self.character_x_pos < 0:
+                self.character_x_pos = 0
+            elif self.character_x_pos > width - self.character_width:
+                self.character_x_pos = width - self.character_width
+
+            if self.character_y_pos < 213 - self.character_height:
+                self.character_y_pos = 213 - self.character_height
+            elif self.character_y_pos > height - self.character_height:
+                self.character_y_pos = height - self.character_height
+
+        if map_locate == 'gol':
+            if self.character_x_pos < 0:
+                self.character_x_pos = 0
+            elif self.character_x_pos > width - self.character_width:
+                self.character_x_pos = width - self.character_width
+
+            if self.character_y_pos < 580 - self.character_height:
+                self.character_y_pos = 580 - self.character_height
+            elif self.character_y_pos > height - self.character_height:
+                self.character_y_pos = height - self.character_height
+
+
         if map_locate == 'in':
             if self.character_x_pos < 0:
                 self.character_x_pos = 0
@@ -347,20 +371,6 @@ def Comu(map_lotate):
                     bathroom()
         pygame.display.update()
 
-def class1():
-    running = 1
-    user = Player()
-    event_list = pygame.event.get()
-    map_locate = "in"
-    # 게임구성
-    while running:
-        #게임 종료
-        event_list = pygame.event.get()
-        for event in event_list:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
 
 #화장실맵
 def bathroom():
@@ -443,11 +453,12 @@ def bathroom():
     pygame.mixer.music.set_volume(0.3)
     mental_level = 1
     breath = pygame.mixer.Sound(os.path.join(image_path,current_path1 + '\\BGM\\Breathing Echo space.mp3'))
-    crush = pygame.mixer.Sound(os.path.join(image_path,current_path1 + '\\BGM\\Monster Alien Roar Aggressive.mp3'))
+    surprised = pygame.mixer.Sound(os.path.join(image_path,current_path1 + '\\BGM\\Monster Alien Roar Aggressive.mp3'))
     font1 = pygame.font.SysFont('휴먼명조',60, False)
     push = font1.render('줍기',True,(0, 0, 0))
     pushevent = False
     crash = 0
+    incame = 1
 # 게임구성
     while running:
         #게임 종료
@@ -465,51 +476,131 @@ def bathroom():
                     mental_level += 1
                 elif event.key == pygame.K_DOWN:
                     mental_level -= 1
-        
+        if incame == 1:
+            if mental_level >= 3 or mental_level <= 0:
+                if mental_level >= 3:
+                    mental_level = 3
+                elif mental_level <= 0:
+                    mental_level = 1
+            if mental_level == 1:
+                screen.blit(ingame_background, (0,0))
+                washstand11_object.draw()
+                washstand12_object.draw()
+                washstand13_object.draw()
+                toilet11_object.draw()
+                toilet12_object.draw()
+                toilet13_object.draw()
+                toilet14_object.draw()
+                user.draw(event_list, map_locate)
+            elif mental_level == 2:
+                screen.blit(ingame_background2, (0, 0))
+                washstand21_object.draw()
+                washstand22_object.draw()
+                washstand23_object.draw()
+                toilet21_object.draw()
+                toilet22_object.draw()
+                toilet23_object.draw()
+                toilet24_object.draw()
+                user.draw(event_list, map_locate)
+            elif mental_level == 3:
+                screen.blit(ingame_background3, (0, 0))
+                washstand31_object.draw()
+                washstand32_object.draw()
+                washstand33_object.draw()
+                toilet31_object.draw()
+                toilet32_object.draw()
+                toilet33_object.draw()
+                toilet34_object.draw()
+                user.draw(event_list, map_locate)
+        if user.character_x_pos > 275 and user.character_x_pos < 462 and user.character_y_pos < 121 and mental_level == 3:
+            pygame.mixer.Sound.play(breath)
+            screen.blit(push, (10, 10))
+            if crash == 1:
+                incame = 0
+                screen.blit(surprise, (0, 0))
+                pygame.mixer.Sound.stop(breath)
+                pygame.mixer.Sound.play(surprised)
+                time.sleep(2)
+                pygame.mixer.Sound.stop(surprised)
+                classroom()
+        else:
+            pygame.mixer.Sound.stop(breath)
+
+
+
+        mental_icon().draw(mental_level)
+        pygame.display.update()
+def classroom():
+    class1 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\class.png'))
+    class2 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\class1.png'))
+    class3 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\class2.png'))
+    running = 1
+    user = Player()
+
+    map_locate = "class"
+    mental_level = 1
+    while True:
+        event_list = pygame.event.get()
+        for event in event_list:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+                if event.key == pygame.K_UP:
+                    mental_level += 1
+                elif event.key == pygame.K_DOWN:
+                    mental_level -= 1
         if mental_level >= 3 or mental_level <= 0:
             if mental_level >= 3:
                 mental_level = 3
             elif mental_level <= 0:
                 mental_level = 1
         if mental_level == 1:
-            screen.blit(ingame_background, (0,0))
-            washstand11_object.draw()
-            washstand12_object.draw()
-            washstand13_object.draw()
-            toilet11_object.draw()
-            toilet12_object.draw()
-            toilet13_object.draw()
-            toilet14_object.draw()
+            screen.blit(class1,(0,0))
+            user.draw(event_list, map_locate)
         elif mental_level == 2:
-            screen.blit(ingame_background2, (0, 0))
-            washstand21_object.draw()
-            washstand22_object.draw()
-            washstand23_object.draw()
-            toilet21_object.draw()
-            toilet22_object.draw()
-            toilet23_object.draw()
-            toilet24_object.draw()
+            screen.blit(class2,(0,0))
+            user.draw(event_list, map_locate)
         elif mental_level == 3:
-            screen.blit(ingame_background3, (0, 0))
-            washstand31_object.draw()
-            washstand32_object.draw()
-            washstand33_object.draw()
-            toilet31_object.draw()
-            toilet32_object.draw()
-            toilet33_object.draw()
-            toilet34_object.draw()
-            if user.character_x_pos > 275 and user.character_x_pos < 462 and user.character_y_pos < 121:
-                pygame.mixer.Sound.play(breath)
-                screen.blit(push, (10, 10))
-                if crash == 1:
-                    pygame.mixer.Sound.play(crush)
-                    screen.blit(surprise, (0, 0))
-                    
-            else:
-                pygame.mixer.Sound.stop(breath)
-        user.draw(event_list, map_locate)
+            screen.blit(class3,(0,0))
+            user.draw(event_list, map_locate)
+        mental_icon().draw(mental_level)
+        pygame.display.update()
 
+def classroom():
+    gol1 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\goalmock.png'))
+    gol2 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\glola_al2l.png'))
+    gol3 = pygame.image.load(os.path.join(image_path,current_path1 + '\\bg_image\\glola_al1l.png'))
+    running = 1
+    user = Player()
 
+    map_locate = "gol"
+    mental_level = 1
+    while True:
+        event_list = pygame.event.get()
+        for event in event_list:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+                if event.key == pygame.K_UP:
+                    mental_level += 1
+                elif event.key == pygame.K_DOWN:
+                    mental_level -= 1
+        if mental_level >= 3 or mental_level <= 0:
+            if mental_level >= 3:
+                mental_level = 3
+            elif mental_level <= 0:
+                mental_level = 1
+        if mental_level == 1:
+            screen.blit(gol1,(0,0))
+            user.draw(event_list, map_locate)
+        elif mental_level == 2:
+            screen.blit(gol2,(0,0))
+            user.draw(event_list, map_locate)
+        elif mental_level == 3:
+            screen.blit(gol3,(0,0))
+            user.draw(event_list, map_locate)
         mental_icon().draw(mental_level)
         pygame.display.update()
 
